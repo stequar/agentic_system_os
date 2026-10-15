@@ -1,0 +1,40 @@
+{
+  "name": "@stequar/agentic-company-os",
+  "version": "0.1.0",
+  "description": "Enterprise-grade multi-agent autonomous software company orchestrator with typed contracts, deterministic gates, and Karpathy Context as RAM.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "agentic-company": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "ai-agents",
+    "orchestration",
+    "multi-agent",
+    "llm-os",
+    "context-engineering",
+    "typescript",
+    "zod",
+    "mcp"
+  ],
+  "author": "Stefano Quarta",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
