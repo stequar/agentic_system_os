@@ -1,0 +1,12 @@
+{
+  "targetPath": "/Users/stequar/Documents/agentic_company_os",
+  "languages": [
+    "typescript",
+    "javascript"
+  ],
+  "frameworks": [],
+  "hermeticTestCommands": [
+    "npm test"
+  ],
+  "updatedAt": "2026-11-04T14:55:27.449Z"
+}

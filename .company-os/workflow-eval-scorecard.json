@@ -1,0 +1,138 @@
+{
+  "evalId": "WF-EVAL-1794242542281",
+  "targetPath": "/Users/stequar/Documents/agentic_company_os",
+  "evaluatedAt": "2026-11-09T16:42:22.281Z",
+  "overallScore": 100,
+  "verdict": "WORKFLOW_CERTIFIED",
+  "axes": [
+    {
+      "axisId": "W1_SESSION_BOOT_AND_CTO_PERSONA",
+      "title": "Top-of-File CTO L1 Persona, 3-Option CEO Greeting Rule & 4 Valid YAML Skills",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "Top-of-file 2nd-person imperative CTO Persona in AGENTS.md: true",
+        "3-Option CEO Session Greeting Rule ([CTO MODE: 1 — STANDUP]): true",
+        "All 4 skills in .agents/skills/ have strict YAML frontmatter at lines 1-4: true (run-company=true, investigate-anomaly=true, rnd-roundtable=true, gatekeeper-audit=true)"
+      ],
+      "metrics": {
+        "hasTopCtoPersona": true,
+        "hasThreeOptionGreeting": true,
+        "validYamlSkillsCount": 4
+      }
+    },
+    {
+      "axisId": "W2_COGNITIVE_FORCING_FUNCTIONS_GATE",
+      "title": "4 CTO Modes, 4 CFFs & Deterministic Anti-Rush Gate in CompanyStateMachine",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "4 Operating Modes (MODE 1..4) & 4 CFFs (CFF-1..4) documented in AGENTS.md: true",
+        "Deterministic block on anomaly -> SPECIFY without RCA (COGNITIVE_FORCING_GATE_VIOLATION): true",
+        "Deterministic block when RCA has ceoApproved=false: true",
+        "Transition unlocked when RCA has 3+ Whys, 2+ Specialists, Systemic Principle & ceoApproved=true: true"
+      ],
+      "metrics": {
+        "hasFourModesInDoc": true,
+        "hasFourCffsInDoc": true,
+        "blockedWithoutRca": true,
+        "blockedWithoutCeoApproval": true,
+        "unlockedWithCeoApproval": true
+      }
+    },
+    {
+      "axisId": "W3_TRI_RING_SYNC_AND_SCOPE_ROUTING",
+      "title": "Zero Ghost Roles (100% Org-Chart <-> AGENTS.md Sync) & Multi-Scope Routing",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "Ring-0 Core Leads visible in AGENTS.md: true",
+        "Ring-1 Tech Specialists (frontend_manager, mcp_cli_runtime_specialist) visible in AGENTS.md: true",
+        "Ring-2 Business Domain Experts (governance_workflow_specialist, ast_gatekeeper_specialist, context_finops_specialist) + domainInvariants visible in AGENTS.md: true",
+        "Multi-scenario Scope Routing accuracy: 3/3 scenarios matched with domainInvariants"
+      ],
+      "metrics": {
+        "ring1Count": 2,
+        "ring2Count": 3,
+        "routedScenariosPassed": 3,
+        "totalRoutingScenarios": 3
+      }
+    },
+    {
+      "axisId": "W4_CEREMONIES_AND_DEVILS_ADVOCATE_FIDELITY",
+      "title": "End-to-End 5 Agile Ceremonies & Mandatory Devil's Advocate (qa_lead + Ring-2)",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "All 5 Agile Ceremonies executed & persisted (Kickoff, Refinement 1:1, Roundtable, War Room, Retrospective)",
+        "Domain Invariants automatically injected into ceremony summaries: true",
+        "Devil's Advocate 'qa_lead' & Ring-2 expert 'governance_workflow_specialist' participated in Roundtable: true",
+        "ConsensusEngine 2-round convergence status: CONSENSUS_REACHED"
+      ],
+      "metrics": {
+        "ceremoniesExecuted": 5,
+        "consensusStatus": "CONSENSUS_REACHED",
+        "invariantsInjected": true
+      }
+    },
+    {
+      "axisId": "W5_DUAL_BRAIN_CLI_ENGINE_BRIDGE",
+      "title": "Dual-Brain CLI Bridge (`workflow status|route|verify-gate`) & Merkle Audit Trail",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "CLI 'workflow status --json' returned activeMode=MODE_1_STANDUP, ring2Count=3",
+        "CLI 'workflow route --scope docs/wiki/engineering/spikes/sprint-17-5-validation.md' matched: governance_workflow_specialist, context_finops_specialist",
+        "CLI 'workflow verify-gate' blocked unapproved anomaly (true) and authorized normal sprint (true)",
+        "Persisted .company-os/workflow-state.json valid=true & Merkle Audit Chain valid=true (entries=66)"
+      ],
+      "metrics": {
+        "workflowStateValid": true,
+        "merkleValid": true,
+        "merkleEntries": 66
+      }
+    },
+    {
+      "axisId": "W6_SELF_HOSTING_SYMMETRY",
+      "title": "100% Self-Hosting DNA Symmetry (CTO L1, Modes, CFFs, Tri-Ring, RACI, 4 Skills, Dashboard)",
+      "score": 100,
+      "passed": true,
+      "weight": 0.15,
+      "evidence": [
+        "Symmetric CTO L1 Kernel, 4 Operating Modes & 4 CFFs present: true",
+        "Complete Tri-Ring Org (5 Ring-0 Leads, 2 Ring-1, 3 Ring-2) synchronized: true",
+        "Deterministic RACI Matrix with ANOMALY_RCA & RND_ROUNDTABLE present: true",
+        "4 Modular YAML Skills + docs/CEO_Dashboard.md (true) + .company-os/ artifacts (true) verified"
+      ],
+      "metrics": {
+        "hasCeoDashboard": true,
+        "hasRaciAnomalyRca": true,
+        "hasCompanyOsArtifacts": true
+      }
+    },
+    {
+      "axisId": "W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT",
+      "title": "AST Diff Guard, Scope Enforcement, FastDecisionGate & Hermetic Invariants Config",
+      "score": 100,
+      "passed": true,
+      "weight": 0.1,
+      "evidence": [
+        "AST Diff Guard blocked assertion tampering: true",
+        "AST Diff Guard blocked out-of-scope file modification: true",
+        "FastDecisionGate rejected .env.production write (FAST_REJECT in 0.035ms)",
+        "Hermetic test commands (npm test) & 3 domain invariant sets active"
+      ],
+      "metrics": {
+        "astTamperBlocked": true,
+        "astScopeBlocked": true,
+        "fastGateRejected": true,
+        "hasValidInvariantsAndConfig": true
+      }
+    }
+  ]
+}

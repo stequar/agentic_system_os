@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "agentic-system-os": {
+      "command": "agentic-os",
+      "args": [
+        "mcp"
+      ]
+    },
+    "agentic-company-os": {
+      "command": "agentic-company",
+      "args": [
+        "mcp"
+      ]
+    }
+  }
+}

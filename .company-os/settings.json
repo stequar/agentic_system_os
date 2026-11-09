@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "governance": {
+    "spikeCheckpoint": "HITL_SPIKE_REVIEW",
+    "anomalyGate": "STRICT_CFF_4_GATES",
+    "releaseApproval": "CEO_MANDATORY",
+    "roundtableDevilsAdvocate": true
+  },
+  "localSlm": {
+    "mode": "AUTO_HARDWARE_ADAPTIVE",
+    "preferredModelOverride": null,
+    "ollamaEndpoint": "http://127.0.0.1:11434",
+    "slaTimeoutMs": 800
+  },
+  "gatekeeper": {
+    "enableFormalAstProver": true,
+    "formalProverTimeoutMs": 500,
+    "selfHealingMaxRetries": 3,
+    "enableWarRoomCircuitBreaker": true,
+    "useTiaTargetedTests": true
+  },
+  "communication": {
+    "personaPreset": "ENGINEERING_PROFESSIONAL",
+    "cavemanMode": true,
+    "language": "en",
+    "greetingRule3Options": true
+  },
+  "finops": {
+    "maxSessionBudgetUsd": 5,
+    "safePauseOnBudgetExceeded": true,
+    "enableTwoTierPromptCache": true
+  }
+}

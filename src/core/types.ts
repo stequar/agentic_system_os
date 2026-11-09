@@ -1,5 +1,10 @@
 export type CompanyState = 
   | "STANDUP"
+  | "INVESTIGATE_RCA"
+  | "RND_DISCOVERY"
+  | "RND_ROUNDTABLE"
+  | "RND_CONSENSUS"
+  | "TECH_VALIDATION"
   | "SPECIFY"
   | "DELEGATE"
   | "IMPLEMENT"

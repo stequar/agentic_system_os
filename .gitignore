@@ -4,6 +4,14 @@ dist/
 .env.*
 !.env.example
 *.log
+*.bak
 .DS_Store
 coverage/
 .turbo/
+.agents/.studio-token
+.company-os/.audit.secret
+.company-os/audit.jsonl
+.company-os/ceremonies/
+.company-os/telemetry/
+.company-os/worktrees/
+.company-os/sessions/

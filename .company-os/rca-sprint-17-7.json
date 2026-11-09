@@ -1,0 +1,43 @@
+{
+  "rcaId": "RCA-SPRINT-17-7-CORE-DOGFOODING",
+  "symptomDescription": "Core primitives (FastDecisionGate, CavemanFormatter, FluffTelemetry, ToolScoper, PromptCacheAdapter, DynamicMcpRegistry) were unit-tested in isolation but not wired into the live execution pipelines, and canonicalJsonStringify in AuditLogger serialized undefined keys causing W5 Merkle verification failure (91/100).",
+  "fiveWhys": [
+    "Why 1: Core modules like FastDecisionGate, ToolScoper, PromptCacheAdapter and CavemanFormatter had zero imports in live CLI/MCP/Self-Healing execution paths.",
+    "Why 2: Sprints 10-19 built vertical modules with isolated unit tests without a horizontal kernel wiring pass across workflow.ts, mcp/server.ts, self-healing.ts and ceremony-dispatcher.ts.",
+    "Why 3: Eval harnesses called some primitives directly rather than asserting their active integration along the runtime pipeline.",
+    "Why 4: canonicalJsonStringify in src/core/audit-logger.ts did not filter out keys with undefined values before SHA-256 hashing, diverging from JSON.stringify on disk when optional fields like rcaId were undefined.",
+    "Why 5: Lack of an End-to-End Kernel Dogfooding Invariant ('Zero Island Modules') requiring every core primitive to be wired into the OS runtime."
+  ],
+  "rootCause": "Missing horizontal kernel wiring across CLI/MCP/Self-Healing/Ceremonies and undefined-key serialization mismatch between in-memory canonicalJsonStringify and disk JSON.stringify.",
+  "systemicPrinciple": "End-to-End Kernel Dogfooding & Canonical State Parity: no core primitive may exist as an island module, and canonical hashing must be 100% isomorphic with JSON disk serialization.",
+  "affectedDomains": [
+    "governance",
+    "workflow",
+    "gatekeeper",
+    "finops",
+    "mcp"
+  ],
+  "consultedSpecialists": [
+    "rnd_lead",
+    "qa_lead",
+    "engineering_lead",
+    "ai_lead",
+    "governance_workflow_specialist",
+    "ast_gatekeeper_specialist",
+    "context_finops_specialist",
+    "mcp_cli_runtime_specialist"
+  ],
+  "redTeamRisks": [
+    "FastDecisionGate in self-healing loop must only reject sensitive paths (.env, .git, secrets) without blocking legitimate source patches.",
+    "CavemanFormatter / FluffTelemetry in CeremonyDispatcher must preserve the 'Active Domain Invariants:' suffix required by E3 and W4.",
+    "MCP Server doctor upgrade to runEnvironmentDoctor must preserve backward-compatible JSON structure for tests/mcp.test.ts."
+  ],
+  "proposedActionPlan": [
+    "TCK-17.7.1: Fix canonicalJsonStringify in src/core/audit-logger.ts to exclude keys with undefined values and reset corrupted audit.jsonl.",
+    "TCK-17.7.2: Wire FastDecisionGate.evaluate into src/gatekeeper/self-healing.ts before patch validation.",
+    "TCK-17.7.3: Wire CavemanFormatter & FluffTelemetry.getInstance().recordCompression into CeremonyDispatcher and ConsensusEngine.",
+    "TCK-17.7.4: Wire ToolScoper, PromptCacheAdapter, DynamicMcpRegistry and runEnvironmentDoctor into src/cli/commands/workflow.ts and src/mcp/server.ts, and verify 100/100 on W1..W7."
+  ],
+  "ceoApproved": true,
+  "approvedAt": "2026-11-09T13:58:20.000Z"
+}

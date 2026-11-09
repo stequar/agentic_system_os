@@ -1,0 +1,12 @@
+{
+  "toolId": "tool_dyn_domain_invariant_and_drift_checker",
+  "name": "domain_invariant_and_drift_checker",
+  "description": "JIT synthesized MCP tool to validate bounded context invariants and schema parity",
+  "generatedByRole": "ai_lead",
+  "sandboxType": "NODE_WORKER",
+  "permissions": [],
+  "inputSchemaJson": "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"boundedContext\":{\"type\":\"string\"},\"targetFile\":{\"type\":\"string\"}},\"required\":[\"boundedContext\"],\"additionalProperties\":false}",
+  "ttlSeconds": 3600,
+  "status": "HOT_LOADED",
+  "createdAt": "2026-11-04T14:55:27.408Z"
+}

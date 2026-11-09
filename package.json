@@ -1,15 +1,22 @@
 {
-  "name": "@stequar/agentic-company-os",
-  "version": "0.1.0",
-  "description": "Enterprise-grade multi-agent autonomous software company orchestrator with typed contracts, deterministic gates, and Karpathy Context as RAM.",
+  "name": "@stequar/agentic-system-os",
+  "version": "1.0.0",
+  "description": "Agentic System OS — Enterprise-grade multi-agent autonomous software engineering orchestrator with Tri-Ring domain ontology, typed Zod contracts, Neuro-Symbolic AST Gatekeeper, and native Claude Code & OpenAI Codex support.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
+    "agentic-os": "dist/index.js",
     "agentic-company": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
@@ -18,7 +25,8 @@
     "ai-agents",
     "orchestration",
     "multi-agent",
-    "llm-os",
+    "claude-code",
+    "codex",
     "context-engineering",
     "typescript",
     "zod",
@@ -27,6 +35,8 @@
   "author": "Stefano Quarta",
   "license": "MIT",
   "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "zod": "^3.24.1"

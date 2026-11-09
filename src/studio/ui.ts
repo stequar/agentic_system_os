@@ -1,0 +1,723 @@
+/**
+ * Renderizza l'interfaccia web responsive in vanilla HTML/CSS/JS
+ * per il Local Web Studio Dashboard, Visual Kanban Board,
+ * Live FinOps Cockpit, Context Health Meter, Breadcrumb Trajectory,
+ * Agile Ceremony Board, Live War Room Cockpit e Fluff Telemetry Gauge (zero dipendenze esterne).
+ */
+export function renderStudioHtml(token: string): string {
+  return `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Company OS — Studio Pro, Agile & FinOps</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-hover: #273549;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --emerald: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; display: flex; flex-direction: column; gap: 24px; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    h1 { font-size: 20px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+    .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--border); }
+    .status-connected { background: rgba(34, 197, 94, 0.2); color: var(--green); border: 1px solid var(--green); }
+    
+    /* War Room Emergency Banner */
+    .warroom-banner { background: rgba(239, 68, 68, 0.15); border: 2px solid var(--red); border-radius: 8px; padding: 14px 18px; display: none; flex-direction: column; gap: 8px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    .btn-resolve { background: var(--red); color: #fff; padding: 6px 14px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 12px; }
+    .btn-resolve:hover { opacity: 0.9; }
+
+    /* Metrics Row */
+    .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .metrics-row-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; position: relative; }
+    .metric-title { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; font-weight: 600; }
+    .metric-value { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .metric-value.success { color: var(--green); }
+    .metric-value.savings { color: var(--emerald); }
+    .metric-value.warn { color: var(--yellow); }
+    .metric-value.error { color: var(--red); }
+    .metric-sub { font-size: 11px; color: var(--muted); }
+
+    /* Health Gauge Bar */
+    .health-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+    .health-bar-fill { height: 100%; width: 100%; background: var(--green); transition: width 0.3s, background 0.3s; }
+    .health-bar-fill.nominal { background: var(--accent); }
+    .health-bar-fill.risk { background: var(--yellow); }
+    .health-bar-fill.critical { background: var(--red); }
+
+    /* Kanban Board */
+    .kanban-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .kanban-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .kanban-header h2 { font-size: 14px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .kanban-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; min-height: 340px; }
+    .kanban-column { background: rgba(15, 23, 42, 0.6); border: 1px dashed var(--border); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s, background 0.2s; }
+    .kanban-column.drag-over { border-color: var(--accent); background: rgba(56, 189, 248, 0.08); }
+    .column-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 4px; }
+    .column-count { background: var(--border); padding: 1px 6px; border-radius: 999px; font-size: 11px; color: var(--text); }
+    .tickets-container { display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; max-height: 420px; }
+    .ticket-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px; cursor: grab; transition: transform 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; gap: 6px; user-select: none; }
+    .ticket-card:active { cursor: grabbing; transform: scale(0.98); }
+    .ticket-card:hover { border-color: var(--accent); background: var(--card-hover); }
+    .ticket-id { font-size: 11px; font-weight: 700; color: var(--accent); font-family: ui-monospace, monospace; }
+    .ticket-title { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text); }
+    .ticket-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+    .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); color: var(--muted); }
+    .badge-assignee { background: rgba(56, 189, 248, 0.15); color: var(--accent); }
+    .badge-epic { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+
+    /* Agile Ceremony Board Section (Sprint 16) */
+    .ceremonies-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .ceremonies-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .ceremonies-header h2 { font-size: 14px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .ceremonies-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; max-height: 420px; overflow-y: auto; }
+    .ceremony-card { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; border-left: 3px solid var(--accent); }
+    .ceremony-card.BRAINSTORMING_KICKOFF { border-left-color: var(--purple); }
+    .ceremony-card.BACKLOG_REFINEMENT_1ON1 { border-left-color: var(--accent); }
+    .ceremony-card.ARCHITECTURE_REVIEW_ROUNDTABLE { border-left-color: var(--yellow); }
+    .ceremony-card.INCIDENT_WAR_ROOM { border-left-color: var(--red); }
+    .ceremony-card.SPRINT_RETROSPECTIVE { border-left-color: var(--emerald); }
+    .ceremony-top { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .ceremony-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .badge-BRAINSTORMING_KICKOFF { background: rgba(168, 85, 247, 0.2); color: var(--purple); }
+    .badge-BACKLOG_REFINEMENT_1ON1 { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+    .badge-ARCHITECTURE_REVIEW_ROUNDTABLE { background: rgba(234, 179, 8, 0.2); color: var(--yellow); }
+    .badge-INCIDENT_WAR_ROOM { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+    .badge-SPRINT_RETROSPECTIVE { background: rgba(16, 185, 129, 0.2); color: var(--emerald); }
+    .ceremony-summary { font-size: 12px; color: var(--text); line-height: 1.4; font-weight: 500; }
+    .ceremony-meta { font-size: 10px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; }
+
+    /* Breadcrumb Trajectory Section */
+    .trajectory-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .trajectory-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .trajectory-header h2 { font-size: 14px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: rgba(15, 23, 42, 0.6); color: var(--muted); transition: 0.15s; }
+    .chip.active { border-color: var(--accent); color: var(--text); background: rgba(56, 189, 248, 0.15); }
+    .trajectory-timeline { display: flex; gap: 12px; overflow-x: auto; padding: 8px 4px 14px 4px; scrollbar-width: thin; }
+    .trajectory-node { min-width: 220px; max-width: 260px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .trajectory-node:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--card-hover); }
+    .node-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--muted); }
+    .node-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+    .badge-FSM_TRANSITION { background: rgba(168, 85, 247, 0.2); color: var(--purple); }
+    .badge-QUALITY_GATE { background: rgba(34, 197, 94, 0.2); color: var(--green); }
+    .badge-SELF_HEALING { background: rgba(234, 179, 8, 0.2); color: var(--yellow); }
+    .badge-FINOPS_ALERT { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+    .badge-TOOL_EXECUTION { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+    .badge-STEERING_ACTION { background: rgba(234, 179, 8, 0.2); color: var(--yellow); }
+    .badge-SYSTEM_EVENT { background: rgba(255, 255, 255, 0.1); color: var(--muted); }
+    .node-summary { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.3; }
+
+    /* Trajectory Inspector Modal / Drawer */
+    #inspector-drawer { display: none; position: fixed; right: 0; top: 0; width: 440px; height: 100vh; background: #0b1120; border-left: 1px solid var(--border); padding: 20px; z-index: 999; box-shadow: -10px 0 30px rgba(0,0,0,0.6); flex-direction: column; gap: 14px; overflow-y: auto; }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .drawer-close { background: none; border: none; font-size: 18px; color: var(--muted); cursor: pointer; }
+    .drawer-content { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text); background: #020617; padding: 12px; border-radius: 6px; overflow-x: auto; max-height: 500px; white-space: pre-wrap; word-break: break-all; }
+
+    /* Telemetry & Steering Grid */
+    .grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .panel h2 { font-size: 14px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; letter-spacing: 0.5px; }
+    #events-feed { height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-family: ui-monospace, monospace; font-size: 12px; }
+    .event-card { padding: 8px 12px; border-radius: 4px; background: rgba(15, 23, 42, 0.6); border-left: 3px solid var(--accent); }
+    .event-card.warn { border-left-color: var(--yellow); }
+    .event-card.error { border-left-color: var(--red); }
+    .event-time { color: var(--muted); font-size: 10px; margin-bottom: 2px; }
+    .controls { display: flex; flex-direction: column; gap: 12px; }
+    button { padding: 10px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 13px; }
+    .btn-pause { background: var(--yellow); color: #000; }
+    .btn-resume { background: var(--green); color: #fff; }
+    .btn-abort { background: var(--red); color: #fff; }
+    .btn-pause:hover, .btn-resume:hover, .btn-abort:hover { opacity: 0.9; }
+    textarea { width: 100%; height: 70px; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; padding: 8px; color: #fff; font-size: 13px; resize: none; }
+    .btn-hint { background: var(--accent); color: #000; margin-top: 6px; width: 100%; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏢 Agentic Company OS — Studio Pro, Agile & FinOps</h1>
+    <div id="conn-status" class="status-badge">Connecting SSE...</div>
+  </header>
+
+  <!-- Live Incident War Room Emergency Cockpit Banner (Sprint 16) -->
+  <div id="warroom-banner" class="warroom-banner">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="color: var(--red); font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        🚨 INCIDENT WAR ROOM ACTIVE — WRITE LOCK ENGAGED
+      </h3>
+      <button class="btn-resolve" onclick="resolveWarRoomPrompt()">🛡️ Risolvi Incidente & Sblocca</button>
+    </div>
+    <div id="warroom-details" style="font-size: 12px; color: var(--text);"></div>
+  </div>
+
+  <!-- Process & Cooperation Metrics KPI Row -->
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-title">First-Pass Yield (FPY)</div>
+      <div id="kpi-fpy" class="metric-value success">--%</div>
+      <div class="metric-sub">Closed without corrective cycles</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Mean Self-Healing Cycles</div>
+      <div id="kpi-healing" class="metric-value">--</div>
+      <div class="metric-sub">AST Closed-loop convergence</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Contract Compliance</div>
+      <div id="kpi-compliance" class="metric-value success">--%</div>
+      <div class="metric-sub">Zod runtime strict guard</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Merkle Audit Integrity</div>
+      <div id="kpi-audit" class="metric-value success">INTEGRA ✅</div>
+      <div class="metric-sub">HMAC-SHA256 verified trail</div>
+    </div>
+  </div>
+
+  <!-- FinOps & Context Health Cockpit Row (Sprint 11 & Sprint 16 Fluff Telemetry) -->
+  <div class="metrics-row-5">
+    <div class="metric-card">
+      <div class="metric-title">Live Token FinOps Spend</div>
+      <div id="kpi-finops-spend" class="metric-value">$0.0000</div>
+      <div id="kpi-finops-tokens" class="metric-sub">0 total tokens</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Net Prompt Caching Savings</div>
+      <div id="kpi-finops-savings" class="metric-value savings">+$0.0000</div>
+      <div id="kpi-finops-ratio" class="metric-sub">0.0% saved vs uncached</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Prompt Cache Read Ratio</div>
+      <div id="kpi-cache-read-rate" class="metric-value">--%</div>
+      <div id="kpi-cache-reads" class="metric-sub">0 cache-read tokens</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Context Health Score</div>
+      <div id="kpi-health-score" class="metric-value success">100%</div>
+      <div class="health-bar-container">
+        <div id="health-bar" class="health-bar-fill" style="width: 100%;"></div>
+      </div>
+      <div id="kpi-health-msg" class="metric-sub" style="margin-top: 4px;">EXCELLENT • RAM fresca</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Caveman Fluff Reduction</div>
+      <div id="kpi-fluff-ratio" class="metric-value savings">0.0%</div>
+      <div id="kpi-fluff-tokens" class="metric-sub">0 tokens cut ($0.00 saved)</div>
+    </div>
+  </div>
+
+  <!-- Interactive Sprint Kanban Board -->
+  <div class="kanban-section">
+    <div class="kanban-header">
+      <h2>📋 Sprint Kanban Board (Drag-and-Drop & Atomic Sync)</h2>
+      <div id="board-sync-status" class="status-badge">Synced with backlog.md</div>
+    </div>
+    <div class="kanban-board">
+      <div class="kanban-column" data-column="BACKLOG" ondragover="allowDrop(event)" ondragleave="clearDrag(event)" ondrop="handleDrop(event, 'BACKLOG')">
+        <div class="column-title"><span>📦 Backlog</span><span id="count-BACKLOG" class="column-count">0</span></div>
+        <div id="col-BACKLOG" class="tickets-container"></div>
+      </div>
+      <div class="kanban-column" data-column="TODO" ondragover="allowDrop(event)" ondragleave="clearDrag(event)" ondrop="handleDrop(event, 'TODO')">
+        <div class="column-title"><span>📋 To Do</span><span id="count-TODO" class="column-count">0</span></div>
+        <div id="col-TODO" class="tickets-container"></div>
+      </div>
+      <div class="kanban-column" data-column="IN_PROGRESS" ondragover="allowDrop(event)" ondragleave="clearDrag(event)" ondrop="handleDrop(event, 'IN_PROGRESS')">
+        <div class="column-title"><span>⏳ In Progress</span><span id="count-IN_PROGRESS" class="column-count">0</span></div>
+        <div id="col-IN_PROGRESS" class="tickets-container"></div>
+      </div>
+      <div class="kanban-column" data-column="REVIEW" ondragover="allowDrop(event)" ondragleave="clearDrag(event)" ondrop="handleDrop(event, 'REVIEW')">
+        <div class="column-title"><span>🔍 Review</span><span id="count-REVIEW" class="column-count">0</span></div>
+        <div id="col-REVIEW" class="tickets-container"></div>
+      </div>
+      <div class="kanban-column" data-column="DONE" ondragover="allowDrop(event)" ondragleave="clearDrag(event)" ondrop="handleDrop(event, 'DONE')">
+        <div class="column-title"><span>✅ Done</span><span id="count-DONE" class="column-count">0</span></div>
+        <div id="col-DONE" class="tickets-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agile Ceremony Board & Meeting Timeline (Sprint 16) -->
+  <div class="ceremonies-section">
+    <div class="ceremonies-header">
+      <h2>🤝 Agile Ceremony Board & Meeting Timeline (RFC-005)</h2>
+      <div id="ceremonies-count" class="status-badge">0 cerimonie</div>
+    </div>
+    <div id="ceremonies-feed" class="ceremonies-feed">
+      <div style="color: var(--muted); font-size: 12px; padding: 12px;">In attesa di verbali delle cerimonie agili...</div>
+    </div>
+  </div>
+
+  <!-- Interactive Breadcrumb Trajectory Section -->
+  <div class="trajectory-section">
+    <div class="trajectory-header">
+      <h2>🧭 Cognitive Breadcrumb Trajectory (Audit Decision Nodes)</h2>
+      <div class="filter-chips">
+        <span class="chip active" onclick="filterTrajectory('ALL')">ALL</span>
+        <span class="chip" onclick="filterTrajectory('FSM_TRANSITION')">FSM</span>
+        <span class="chip" onclick="filterTrajectory('QUALITY_GATE')">GATEKEEPER</span>
+        <span class="chip" onclick="filterTrajectory('SELF_HEALING')">HEALING</span>
+        <span class="chip" onclick="filterTrajectory('FINOPS_ALERT')">FINOPS/HEALTH</span>
+      </div>
+    </div>
+    <div id="trajectory-timeline" class="trajectory-timeline">
+      <div style="color: var(--muted); font-size: 12px; padding: 12px;">In attesa di nodi decisionali...</div>
+    </div>
+  </div>
+
+  <!-- Telemetry & Steering Grid -->
+  <div class="grid">
+    <div class="panel">
+      <h2>Live Telemetry & Event Stream (SSE)</h2>
+      <div id="events-feed"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Safe-Point Steering</h2>
+      <div class="controls">
+        <button class="btn-pause" onclick="sendSteer('pause')">⏸️ Safe Pause</button>
+        <button class="btn-resume" onclick="sendSteer('resume')">▶️ Resume</button>
+        <div>
+          <textarea id="hint-msg" placeholder="Invia hint operativo (preserva i test)..."></textarea>
+          <button class="btn-hint" onclick="sendHint()">💡 Invia Hint Umano</button>
+        </div>
+        <button class="btn-abort" onclick="sendSteer('abort')">🛑 Abort</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trajectory Inspection Drawer -->
+  <div id="inspector-drawer">
+    <div class="drawer-header">
+      <h3 id="drawer-title" style="font-size: 14px; color: var(--accent);">Node Details</h3>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div style="font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 4px;">
+      <div><strong>Seq:</strong> <span id="drawer-seq">-</span> | <strong>Category:</strong> <span id="drawer-cat">-</span></div>
+      <div><strong>Agent:</strong> <span id="drawer-agent">-</span></div>
+      <div><strong>Merkle Hash:</strong> <span id="drawer-hash" style="font-family: monospace; font-size: 9px;">-</span></div>
+    </div>
+    <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-top: 6px;">Payload</div>
+    <pre id="drawer-payload" class="drawer-content"></pre>
+  </div>
+
+  <script>
+    const token = new URLSearchParams(window.location.search).get('token') || "${token}";
+    const feed = document.getElementById('events-feed');
+    const connStatus = document.getElementById('conn-status');
+    const syncStatus = document.getElementById('board-sync-status');
+    let currentTrajectoryFilter = 'ALL';
+    let currentActiveIncidentId = null;
+
+    // 1. SSE Stream
+    const evtSource = new EventSource('/api/events?token=' + encodeURIComponent(token));
+
+    evtSource.onopen = () => {
+      connStatus.textContent = 'CONNECTED (127.0.0.1)';
+      connStatus.className = 'status-badge status-connected';
+    };
+
+    evtSource.onerror = () => {
+      connStatus.textContent = 'DISCONNECTED';
+      connStatus.className = 'status-badge';
+    };
+
+    evtSource.onmessage = (e) => {
+      try {
+        const ev = JSON.parse(e.data);
+        const div = document.createElement('div');
+        div.className = 'event-card ' + (ev.level || 'info');
+        div.innerHTML = '<div class="event-time">' + new Date(ev.timestamp).toLocaleTimeString() + ' [' + ev.sourceAgent + ']</div><div><strong>' + ev.type + '</strong> ' + JSON.stringify(ev.payload || {}) + '</div>';
+        feed.prepend(div);
+
+        // Reattività in tempo reale
+        if (ev.type === 'TICKET_STATUS_CHANGED') {
+          loadKanban();
+          loadTrajectory();
+        } else if (['GATEKEEPER_PASSED', 'GATEKEEPER_FAILED', 'SELF_HEALING_ITERATION', 'CONTRACT_VIOLATION', 'METRICS_CALCULATED'].includes(ev.type)) {
+          loadMetrics();
+          loadTrajectory();
+        } else if (['BUDGET_WARNING', 'BUDGET_EXCEEDED', 'FINOPS_ALERT'].includes(ev.type)) {
+          loadFinOps();
+        } else if (ev.type === 'CONTEXT_HEALTH_ALERT') {
+          loadContextHealth();
+        } else if (['CEREMONY_STARTED', 'CEREMONY_CONCLUDED', 'CONSENSUS_REACHED', 'TIE_BREAK_INVOKED'].includes(ev.type)) {
+          loadAgileCeremonies();
+          loadFluffTelemetry();
+        } else if (['WAR_ROOM_TRIGGERED', 'WAR_ROOM_RESOLVED'].includes(ev.type)) {
+          loadWarRoomStatus();
+          loadAgileCeremonies();
+        }
+      } catch (err) {}
+    };
+
+    // 2. Drag-and-Drop Kanban Board
+    function allowDrop(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drag-over');
+    }
+
+    function clearDrag(ev) {
+      ev.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDragStart(ev) {
+      ev.dataTransfer.setData('text/plain', ev.currentTarget.dataset.ticketId);
+    }
+
+    async function handleDrop(ev, targetColumn) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drag-over');
+      const ticketId = ev.dataTransfer.getData('text/plain');
+      if (!ticketId) return;
+
+      syncStatus.textContent = 'Moving ' + ticketId + '...';
+      syncStatus.className = 'status-badge';
+
+      try {
+        const res = await fetch('/api/kanban/move?token=' + encodeURIComponent(token), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ticketId, targetColumn })
+        });
+        const data = await res.json();
+        if (data.success) {
+          syncStatus.textContent = 'Synced with backlog.md';
+          syncStatus.className = 'status-badge status-connected';
+          loadKanban();
+        } else {
+          syncStatus.textContent = 'Move failed: ' + (data.message || 'error');
+        }
+      } catch (err) {
+        syncStatus.textContent = 'Network error';
+      }
+    }
+
+    // 3. Caricamento e rendering della Kanban Board
+    async function loadKanban() {
+      try {
+        const res = await fetch('/api/kanban?token=' + encodeURIComponent(token));
+        const board = await res.json();
+        renderKanban(board.tickets || []);
+      } catch (err) {
+        console.error('Errore caricamento kanban:', err);
+      }
+    }
+
+    function renderKanban(tickets) {
+      const columns = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'];
+      const counts = { BACKLOG: 0, TODO: 0, IN_PROGRESS: 0, REVIEW: 0, DONE: 0 };
+
+      columns.forEach(col => {
+        const container = document.getElementById('col-' + col);
+        container.innerHTML = '';
+      });
+
+      tickets.forEach(ticket => {
+        if (!counts.hasOwnProperty(ticket.status)) return;
+        counts[ticket.status]++;
+
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        card.draggable = true;
+        card.dataset.ticketId = ticket.id;
+        card.ondragstart = handleDragStart;
+
+        card.innerHTML = 
+          '<div class="ticket-id">' + escapeHtml(ticket.id) + '</div>' +
+          '<div class="ticket-title">' + escapeHtml(ticket.title) + '</div>' +
+          '<div class="ticket-meta">' +
+            (ticket.assignedTo ? '<span class="badge badge-assignee">' + escapeHtml(ticket.assignedTo) + '</span>' : '') +
+            (ticket.epic ? '<span class="badge badge-epic">' + escapeHtml(ticket.epic) + '</span>' : '') +
+          '</div>';
+
+        document.getElementById('col-' + ticket.status).appendChild(card);
+      });
+
+      columns.forEach(col => {
+        document.getElementById('count-' + col).textContent = counts[col];
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // 4. Caricamento Metriche di Cooperazione
+    async function loadMetrics() {
+      try {
+        const res = await fetch('/api/metrics?token=' + encodeURIComponent(token));
+        const metrics = await res.json();
+
+        document.getElementById('kpi-fpy').textContent = metrics.firstPassYieldPercentage + '%';
+        document.getElementById('kpi-healing').textContent = metrics.meanSelfHealingCycles;
+        document.getElementById('kpi-compliance').textContent = metrics.contractCompliancePercentage + '%';
+        document.getElementById('kpi-audit').textContent = metrics.auditTrailIntegrity ? 'INTEGRA ✅' : 'CORROTTA ❌';
+      } catch (err) {}
+    }
+
+    // 5. Caricamento FinOps
+    async function loadFinOps() {
+      try {
+        const res = await fetch('/api/finops?token=' + encodeURIComponent(token));
+        const finops = await res.json();
+
+        document.getElementById('kpi-finops-spend').textContent = '$' + finops.totalCostUsd.toFixed(4);
+        document.getElementById('kpi-finops-tokens').textContent = finops.totalTokens.toLocaleString() + ' total tokens';
+        document.getElementById('kpi-finops-savings').textContent = '+$' + finops.promptCacheSavingsUsd.toFixed(4);
+        document.getElementById('kpi-finops-ratio').textContent = finops.cacheSavingsRatioPercentage.toFixed(1) + '% saved vs uncached';
+        document.getElementById('kpi-cache-read-rate').textContent = finops.promptCacheHitRatePercentage.toFixed(1) + '%';
+        document.getElementById('kpi-cache-reads').textContent = finops.cacheReadTokens.toLocaleString() + ' cache-read tokens';
+      } catch (err) {}
+    }
+
+    // 6. Caricamento Context Health Meter
+    async function loadContextHealth() {
+      try {
+        const res = await fetch('/api/context-health?token=' + encodeURIComponent(token));
+        const health = await res.json();
+
+        const scoreEl = document.getElementById('kpi-health-score');
+        if (scoreEl) {
+          scoreEl.textContent = health.healthScore + '%';
+
+          const bar = document.getElementById('health-bar');
+          bar.style.width = Math.min(100, Math.max(0, health.healthScore)) + '%';
+          bar.className = 'health-bar-fill ' + (health.healthScore >= 90 ? '' : health.healthScore >= 70 ? 'nominal' : health.healthScore >= 40 ? 'risk' : 'critical');
+
+          const msgEl = document.getElementById('kpi-health-msg');
+          msgEl.textContent = health.status + ' • ' + health.recommendedAction;
+        }
+      } catch (err) {}
+    }
+
+    // 7. Caricamento Fluff Telemetry (Sprint 16)
+    async function loadFluffTelemetry() {
+      try {
+        const res = await fetch('/api/fluff-telemetry?token=' + encodeURIComponent(token));
+        const report = await res.json();
+
+        document.getElementById('kpi-fluff-ratio').textContent = report.fluffReductionPercentage.toFixed(1) + '%';
+        document.getElementById('kpi-fluff-tokens').textContent = 
+          report.fluffTokensEliminated.toLocaleString() + ' tokens cut ($' + report.estimatedDollarsSavedUsd.toFixed(4) + ' saved)';
+      } catch (err) {}
+    }
+
+    // 8. Caricamento Agile Ceremony Board (Sprint 16)
+    async function loadAgileCeremonies() {
+      try {
+        const res = await fetch('/api/ceremonies?token=' + encodeURIComponent(token));
+        const data = await res.json();
+        renderCeremonies(data.ceremonies || [], data.retrospectives || []);
+      } catch (err) {
+        console.error('Errore caricamento cerimonie:', err);
+      }
+    }
+
+    function renderCeremonies(ceremonies, retrospectives) {
+      const feedEl = document.getElementById('ceremonies-feed');
+      const countEl = document.getElementById('ceremonies-count');
+      countEl.textContent = ceremonies.length + ' cerimonie';
+      feedEl.innerHTML = '';
+
+      if (!ceremonies || ceremonies.length === 0) {
+        feedEl.innerHTML = '<div style="color: var(--muted); font-size: 12px; padding: 12px;">Nessuna cerimonia registrata in .company-os/ceremonies/</div>';
+        return;
+      }
+
+      ceremonies.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'ceremony-card ' + c.type;
+
+        const timeStr = new Date(c.startedAt).toLocaleTimeString();
+        let retroBadge = '';
+
+        if (c.type === 'SPRINT_RETROSPECTIVE') {
+          const matchingRetro = retrospectives.find(r => r.sprintId && c.summary.includes(r.sprintId));
+          if (matchingRetro) {
+            retroBadge = '<div style="margin-top: 4px; font-size: 11px; color: var(--emerald); font-weight: 600;">' +
+                         '🎯 FPY: ' + matchingRetro.fpyPercentage + '% • ' + matchingRetro.actionItems.length + ' action items' +
+                         '</div>';
+          }
+        }
+
+        card.innerHTML = 
+          '<div class="ceremony-top">' +
+            '<span class="ceremony-badge badge-' + c.type + '">' + c.type.replace(/_/g, ' ') + '</span>' +
+            '<span class="badge">' + c.status + ' • ' + timeStr + '</span>' +
+          '</div>' +
+          '<div class="ceremony-summary">' + escapeHtml(c.summary) + '</div>' +
+          retroBadge +
+          '<div class="ceremony-meta">' +
+            '<span>👑 Chair: <strong>' + escapeHtml(c.chairRole) + '</strong></span>' +
+            '<span>👥 ' + (c.attendeeRoles ? c.attendeeRoles.join(', ') : '') + '</span>' +
+          '</div>';
+
+        feedEl.appendChild(card);
+      });
+    }
+
+    // 9. Caricamento e gestione Live War Room Cockpit (Sprint 16)
+    async function loadWarRoomStatus() {
+      try {
+        const res = await fetch('/api/war-room?token=' + encodeURIComponent(token));
+        const warRoom = await res.json();
+        const banner = document.getElementById('warroom-banner');
+        const details = document.getElementById('warroom-details');
+
+        if (warRoom.isWriteLocked && warRoom.activeIncidents && warRoom.activeIncidents.length > 0) {
+          const inc = warRoom.activeIncidents[0];
+          currentActiveIncidentId = inc.incidentId;
+          banner.style.display = 'flex';
+          details.innerHTML = 
+            '<div><strong>Incidente:</strong> ' + escapeHtml(inc.incidentId) + ' | <strong>Trigger:</strong> ' + escapeHtml(inc.trigger) + ' | <strong>Ticket:</strong> ' + escapeHtml(inc.targetTicketId) + '</div>' +
+            '<div><strong>Causa:</strong> ' + escapeHtml(inc.rootCause) + '</div>' +
+            '<div><strong>Rollback Snapshot SHA:</strong> <code style="font-family: monospace; font-size: 11px;">' + inc.rollbackSnapshotSha256.slice(0, 16) + '...</code></div>' +
+            '<div><strong>Contenimento:</strong> ' + escapeHtml(inc.containmentAction) + '</div>';
+        } else {
+          banner.style.display = 'none';
+          currentActiveIncidentId = null;
+        }
+      } catch (err) {}
+    }
+
+    async function resolveWarRoomPrompt() {
+      if (!currentActiveIncidentId) return;
+      const notes = prompt('Inserisci note di risoluzione per revocare il blocco di scrittura:');
+      if (!notes || notes.trim().length < 5) {
+        alert('Note di risoluzione obbligatorie (almeno 5 caratteri).');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/war-room/resolve?token=' + encodeURIComponent(token), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            incidentId: currentActiveIncidentId,
+            resolutionNotes: notes.trim()
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Incidente risolto con successo! Blocco di scrittura rilasciato.');
+          loadWarRoomStatus();
+        } else {
+          alert('Errore risoluzione: ' + (data.error || 'sconosciuto'));
+        }
+      } catch (err) {
+        alert('Errore di rete durante la risoluzione.');
+      }
+    }
+
+    // 10. Caricamento e rendering Breadcrumb Trajectory
+    async function loadTrajectory() {
+      try {
+        let url = '/api/trajectory?limit=30&token=' + encodeURIComponent(token);
+        if (currentTrajectoryFilter !== 'ALL') {
+          url += '&category=' + encodeURIComponent(currentTrajectoryFilter);
+        }
+        const res = await fetch(url);
+        const data = await res.json();
+        renderTrajectory(data.nodes || []);
+      } catch (err) {
+        console.error('Errore caricamento traiettoria:', err);
+      }
+    }
+
+    function renderTrajectory(nodes) {
+      const timeline = document.getElementById('trajectory-timeline');
+      timeline.innerHTML = '';
+
+      if (!nodes || nodes.length === 0) {
+        timeline.innerHTML = '<div style="color: var(--muted); font-size: 12px; padding: 12px;">Nessun nodo trovato per la categoria selezionata.</div>';
+        return;
+      }
+
+      nodes.forEach(node => {
+        const div = document.createElement('div');
+        div.className = 'trajectory-node';
+        div.onclick = () => openDrawer(node);
+
+        const timeStr = new Date(node.timestamp).toLocaleTimeString();
+        div.innerHTML = '<div class="node-header">' +
+                        '<span>#' + node.sequenceNumber + ' • ' + timeStr + '</span>' +
+                        '<span class="node-badge badge-' + node.category + '">' + node.category.replace('_', ' ') + '</span>' +
+                        '</div>' +
+                        '<div class="node-summary">' + escapeHtml(node.summary) + '</div>' +
+                        '<div style="font-size: 10px; color: var(--muted); margin-top: auto;">' + escapeHtml(node.sourceAgent) + '</div>';
+        timeline.appendChild(div);
+      });
+    }
+
+    function filterTrajectory(cat) {
+      currentTrajectoryFilter = cat;
+      document.querySelectorAll('.filter-chips .chip').forEach(el => {
+        el.classList.toggle('active', el.textContent === cat);
+      });
+      loadTrajectory();
+    }
+
+    function openDrawer(node) {
+      document.getElementById('drawer-title').textContent = node.summary;
+      document.getElementById('drawer-seq').textContent = node.sequenceNumber;
+      document.getElementById('drawer-cat').textContent = node.category;
+      document.getElementById('drawer-agent').textContent = node.sourceAgent + ' (' + new Date(node.timestamp).toLocaleString() + ')';
+      document.getElementById('drawer-hash').textContent = node.merkleHash || 'N/A';
+      document.getElementById('drawer-payload').textContent = JSON.stringify(node.payload || {}, null, 2);
+      document.getElementById('inspector-drawer').style.display = 'flex';
+    }
+
+    function closeDrawer() {
+      document.getElementById('inspector-drawer').style.display = 'none';
+    }
+
+    // 11. Steering Commands
+    async function sendSteer(action) {
+      await fetch('/api/steer?token=' + encodeURIComponent(token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      });
+    }
+
+    async function sendHint() {
+      const msg = document.getElementById('hint-msg').value;
+      if (!msg.trim()) return;
+      await fetch('/api/steer?token=' + encodeURIComponent(token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'hint', message: msg })
+      });
+      document.getElementById('hint-msg').value = '';
+    }
+
+    // Inizializzazione automatica
+    loadKanban();
+    loadMetrics();
+    loadFinOps();
+    loadContextHealth();
+    loadFluffTelemetry();
+    loadAgileCeremonies();
+    loadWarRoomStatus();
+    loadTrajectory();
+  </script>
+</body>
+</html>`;
+}
