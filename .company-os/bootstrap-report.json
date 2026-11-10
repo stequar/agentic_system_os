@@ -1,0 +1,371 @@
+{
+  "targetPath": "/Users/stequar/Documents/agentic_company_os",
+  "phasesCompleted": [
+    "P0_DEEP_RECONNAISSANCE",
+    "P1_SEMANTIC_DOMAIN_MINING",
+    "P2_TRI_RING_ORG_SYNTHESIS",
+    "P3_HOLISTIC_TOOLING_PROVISIONING",
+    "P4_INAUGURAL_ALIGNMENT_CEREMONY"
+  ],
+  "stack": {
+    "targetPath": "/Users/stequar/Documents/agentic_company_os",
+    "languages": [
+      "typescript",
+      "javascript"
+    ],
+    "frameworks": [],
+    "hasDocker": false,
+    "packageManagers": [
+      "npm"
+    ],
+    "testCommands": [
+      "npm test"
+    ],
+    "entryPoints": [
+      "src/index.ts"
+    ],
+    "detectedAt": "2026-11-04T14:55:26.699Z"
+  },
+  "hermeticTestCommands": [
+    "npm test"
+  ],
+  "doctorReport": {
+    "targetPath": "/Users/stequar/Documents/agentic_company_os",
+    "overallStatus": "warn",
+    "checks": [
+      {
+        "checkName": "git",
+        "category": "vcs",
+        "status": "ok",
+        "version": "2.39.5",
+        "message": "Git VCS attivo (2.39.5)"
+      },
+      {
+        "checkName": "python3",
+        "category": "runtime",
+        "status": "ok",
+        "version": "3.12.8",
+        "message": "Python 3 runtime operativo (3.12.8)"
+      },
+      {
+        "checkName": "venv",
+        "category": "workspace",
+        "status": "skipped",
+        "message": "Nessun virtualenv locale (.venv/bin/python) rilevato nel workspace target",
+        "fixSuggested": "python3 -m venv .venv && source .venv/bin/activate"
+      },
+      {
+        "checkName": "swiftc",
+        "category": "compiler",
+        "status": "ok",
+        "version": "6.1",
+        "message": "Compilatore Swift attivo (6.1)"
+      },
+      {
+        "checkName": "docker",
+        "category": "daemon",
+        "status": "warn",
+        "message": "Docker daemon non attivo o non raggiungibile (warning non bloccante per sviluppo locale)",
+        "fixSuggested": "open -a Docker"
+      }
+    ],
+    "checkedAt": "2026-11-04T14:55:27.305Z",
+    "durationMs": 606
+  },
+  "orgChart": {
+    "targetPath": "/Users/stequar/Documents/agentic_company_os",
+    "generatedAt": "2026-11-04T14:55:27.347Z",
+    "ring0CoreLeads": [
+      "cto",
+      "engineering_lead",
+      "product_lead",
+      "qa_lead",
+      "ai_lead",
+      "rnd_lead"
+    ],
+    "ring1TechSpecialists": [
+      {
+        "id": "frontend_manager",
+        "title": "Frontend & TypeScript Engineering Lead",
+        "ring": "RING_1_TECH_SPECIALIST",
+        "origin": "CATALOG",
+        "boundedContext": "TypeScript Modules, Contracts & Web Studio UI",
+        "domainKeywords": [
+          "typescript",
+          "react",
+          "frontend",
+          "zod",
+          "studio"
+        ],
+        "domainScope": [
+          "scripts/init-agile-ceremonies.ts",
+          "src/attach/injector.ts",
+          "src/attach/smart-merge.ts",
+          "src/bootstrap/holistic-bootstrap.ts",
+          "src/cli/commands/attach.ts",
+          "src/cli/commands/bootstrap.ts",
+          "src/cli/commands/doctor.ts",
+          "src/cli/commands/init.ts",
+          "src/cli/commands/inspect.ts",
+          "src/cli/commands/mcp.ts",
+          "src/cli/commands/resume.ts",
+          "src/cli/commands/status.ts",
+          "src/cli/commands/studio.ts",
+          "src/cli/commands/workflow.ts",
+          "src/cli/context.ts"
+        ],
+        "domainInvariants": [
+          "Compilazione TypeScript strict con zero errori e validazione contratti Zod."
+        ],
+        "microRoleCard": "[RING-1: frontend_manager] Lead TypeScript/Frontend con responsabilità su tipizzazione strict, contratti Zod e Web Studio UI.",
+        "testCommand": "npm test"
+      },
+      {
+        "id": "mcp_cli_runtime_specialist",
+        "title": "MCP Server, Worker Sandbox & CLI Runtime Specialist",
+        "ring": "RING_1_TECH_SPECIALIST",
+        "origin": "OPEN_ENDED_SYNTHESIS",
+        "boundedContext": "MCP JSON-RPC Transport, JIT Tool Synthesis & CLI Dispatcher",
+        "domainKeywords": [
+          "mcp",
+          "cli",
+          "dispatcher",
+          "synthesizer",
+          "worker"
+        ],
+        "domainScope": [
+          "src/cli/commands/attach.ts",
+          "src/cli/commands/bootstrap.ts",
+          "src/cli/commands/doctor.ts",
+          "src/cli/commands/init.ts",
+          "src/cli/commands/inspect.ts",
+          "src/cli/commands/mcp.ts",
+          "src/cli/commands/resume.ts",
+          "src/cli/commands/status.ts",
+          "src/cli/commands/studio.ts",
+          "src/cli/commands/workflow.ts",
+          "src/cli/context.ts",
+          "src/cli/dispatcher.ts",
+          "src/cli/wizard.ts",
+          "src/mcp/client.ts",
+          "src/mcp/dynamic-registry.ts"
+        ],
+        "domainInvariants": [
+          "Il trasporto stdio MCP non deve mai essere inquinato da log non-JSON-RPC e i tool dinamici devono superare il pre-flight test in Worker Sandbox."
+        ],
+        "microRoleCard": "[RING-1: mcp_cli_runtime_specialist] Specialista sintetizzato per MCP Server/Client, JIT Tool Synthesis e architettura CLI modulare.",
+        "testCommand": "npm test"
+      }
+    ],
+    "ring2DomainExperts": [
+      {
+        "id": "governance_workflow_specialist",
+        "title": "Multi-Agent Governance, Ceremonies & Consensus Specialist",
+        "ring": "RING_2_DOMAIN_EXPERT",
+        "origin": "SEMANTIC_MINED",
+        "boundedContext": "Agile Ceremonies, Anti-Echo-Chamber Consensus & Cognitive Forcing Functions",
+        "domainKeywords": [
+          "ceremony-dispatcher",
+          "consensus-engine",
+          "state-machine",
+          "workflow-eval",
+          "ceremonies",
+          "governance"
+        ],
+        "domainScope": [
+          "docs/wiki/engineering/spikes/sprint-17-5-validation.md",
+          "docs/wiki/product/backlog.md",
+          "docs/wiki/qa/fitness-project-eval-report.md",
+          "docs/wiki/qa/integration-eval-plan.md",
+          "docs/wiki/qa/workflow-eval-plan.md",
+          "docs/wiki/rnd/audits/agile-ceremonies-and-communication-efficiency.md",
+          "docs/wiki/rnd/rfcs/RFC-005-AGILE-CEREMONIES-AND-COLLABORATION-PROTOCOL.md",
+          "docs/wiki/rnd/rfcs/RFC-007-BROWNFIELD-SYMBIOSIS-AND-SMART-ADOPTION.md",
+          "docs/wiki/rnd/roundtables/2026-11-roundtable-rfc-007.md",
+          "scripts/init-agile-ceremonies.ts",
+          "src/attach/injector.ts",
+          "src/bootstrap/holistic-bootstrap.ts",
+          "src/cli/commands/workflow.ts",
+          "src/contracts/ceremonies.ts",
+          "src/contracts/workflow-eval.ts",
+          "src/core/ceremony-dispatcher.ts",
+          "src/core/consensus-engine.ts",
+          "src/core/state-machine.ts",
+          "src/eval/integration-harness.ts",
+          "src/eval/workflow-eval-harness.ts",
+          "src/generator/roles.ts",
+          "src/inspector/domain-miner.ts"
+        ],
+        "domainInvariants": [
+          "Ogni anomalia o bug deve superare il Cognitive Forcing Gate (MODE_2_INVESTIGATE_RCA -> MODE_3_RND_ROUNDTABLE) con approvazione CEO prima di entrare in MODE_4_BUILD_GATEKEEPER.",
+          "Tutte le cerimonie agili devono convocare dinamicamente gli esperti Ring-1 e Ring-2 tramite resolveDomainAttendeesForScope."
+        ],
+        "microRoleCard": "[RING-2: governance_workflow_specialist] Custode della macchina a stati CTO, delle Cognitive Forcing Functions, di CeremonyDispatcher e del ConsensusEngine.",
+        "testCommand": "npm test"
+      },
+      {
+        "id": "ast_gatekeeper_specialist",
+        "title": "Deterministic AST Gatekeeper, Self-Healing & Sandbox Security Specialist",
+        "ring": "RING_2_DOMAIN_EXPERT",
+        "origin": "SEMANTIC_MINED",
+        "boundedContext": "AST Diff Guard, Self-Healing Loop, Incident War Room & Worker Sandbox",
+        "domainKeywords": [
+          "ast-guard",
+          "self-healing",
+          "war-room",
+          "sandbox-runner",
+          "gatekeeper",
+          "quarantine"
+        ],
+        "domainScope": [
+          "docs/CEO_Dashboard.md",
+          "docs/wiki/engineering/spikes/sprint-19-validation.md",
+          "docs/wiki/product/backlog.md",
+          "docs/wiki/qa/integration-eval-plan.md",
+          "src/attach/injector.ts",
+          "src/contracts/quarantine.ts",
+          "src/core/steering-engine.ts",
+          "src/eval/integration-harness.ts",
+          "src/eval/workflow-eval-harness.ts",
+          "src/gatekeeper/ast-guard.ts",
+          "src/gatekeeper/parsers/cargo.ts",
+          "src/gatekeeper/parsers/go.ts",
+          "src/gatekeeper/parsers/index.ts",
+          "src/gatekeeper/parsers/pytest.ts",
+          "src/gatekeeper/parsers/tsc.ts",
+          "src/gatekeeper/parsers/vitest.ts",
+          "src/gatekeeper/quarantine.ts",
+          "src/gatekeeper/runner.ts",
+          "src/gatekeeper/self-healing.ts",
+          "src/gatekeeper/tia.ts",
+          "src/gatekeeper/war-room.ts",
+          "src/mcp/sandbox-runner.ts"
+        ],
+        "domainInvariants": [
+          "L'AST Diff Guard deve bloccare qualsiasi rimozione di test o asserzioni (Test Preservation Invariant) e modifiche fuori scope.",
+          "Ogni fallimento 3/3 del loop di Self-Healing deve attivare l'Incident War Room con rollback atomico SHA-256."
+        ],
+        "microRoleCard": "[RING-2: ast_gatekeeper_specialist] Garante del Deterministic Gatekeeper, dell'AST Diff Guard, dell'Incident War Room e della sicurezza delle sandbox Worker.",
+        "testCommand": "npm test"
+      },
+      {
+        "id": "context_finops_specialist",
+        "title": "Karpathy Context-as-RAM, Prompt Caching & FinOps Specialist",
+        "ring": "RING_2_DOMAIN_EXPERT",
+        "origin": "SEMANTIC_MINED",
+        "boundedContext": "Two-Tier Prefix Caching, Anti-Rot Compaction & Token FinOps Telemetry",
+        "domainKeywords": [
+          "finops-engine",
+          "context-compactor",
+          "prompt-cache-adapter",
+          "context-health",
+          "budget-watchdog",
+          "finops"
+        ],
+        "domainScope": [
+          "docs/CEO_Dashboard.md",
+          "docs/wiki/engineering/spikes/sprint-11-validation.md",
+          "docs/wiki/engineering/spikes/sprint-17-5-validation.md",
+          "docs/wiki/product/backlog.md",
+          "docs/wiki/rnd/rfcs/RFC-007-BROWNFIELD-SYMBIOSIS-AND-SMART-ADOPTION.md",
+          "docs/wiki/rnd/roundtables/2026-11-roundtable-rfc-007.md",
+          "src/contracts/finops.ts",
+          "src/core/budget-watchdog.ts",
+          "src/core/context-compactor.ts",
+          "src/core/context-health.ts",
+          "src/core/finops-engine.ts",
+          "src/core/prompt-cache-adapter.ts",
+          "src/gatekeeper/self-healing.ts",
+          "src/studio/server.ts"
+        ],
+        "domainInvariants": [
+          "La compattazione del contesto a soglia deve preservare il 100% degli invariant di ticket e file target (verifyContextInvariants).",
+          "Il budget token deve rispettare il BudgetWatchdog con Safe-Pause al 100% e tracciamento FinOps real-time."
+        ],
+        "microRoleCard": "[RING-2: context_finops_specialist] Architetto del principio Karpathy Context-as-RAM, Prompt Caching Tier-1/Tier-2, Anti-Rot Compaction e FinOps.",
+        "testCommand": "npm test"
+      }
+    ]
+  },
+  "attachResult": {
+    "targetPath": "/Users/stequar/Documents/agentic_company_os",
+    "success": true,
+    "injectedFiles": [
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/AGENTS.md",
+        "status": "BACKED_UP_AND_OVERWRITTEN",
+        "backupPath": "/Users/stequar/Documents/agentic_company_os/AGENTS.md.bak",
+        "sha256": "8de5490f8ae97bb157bc4ff1ba3a37aaa40ec94199378153d9845965c842a9cb"
+      },
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/.agents/skills/run-company/SKILL.md",
+        "status": "BACKED_UP_AND_OVERWRITTEN",
+        "backupPath": "/Users/stequar/Documents/agentic_company_os/.agents/skills/run-company/SKILL.md.bak",
+        "sha256": "517e62b97b136e6db8e2aff5b2c0ec38d516e942ebc103663707f15296531437"
+      },
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/docs/wiki/INDEX.md",
+        "status": "BACKED_UP_AND_OVERWRITTEN",
+        "backupPath": "/Users/stequar/Documents/agentic_company_os/docs/wiki/INDEX.md.bak",
+        "sha256": "caf6652feffc0a1c72d01cb0b953c59c45666337d6835a7b831a9841f3afce95"
+      },
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/docs/wiki/product/roadmap.md",
+        "status": "BACKED_UP_AND_OVERWRITTEN",
+        "backupPath": "/Users/stequar/Documents/agentic_company_os/docs/wiki/product/roadmap.md.bak",
+        "sha256": "76ccb65d06f0873f74d70ff07fbf784604aba68e61faa3bf64568444e0bdd17f"
+      },
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/docs/wiki/product/backlog.md",
+        "status": "BACKED_UP_AND_OVERWRITTEN",
+        "backupPath": "/Users/stequar/Documents/agentic_company_os/docs/wiki/product/backlog.md.bak",
+        "sha256": "2c9455d0a3a08fbbbd8900d1690ce6979e53834f0bdb921e904b5b4f2f4708d2"
+      },
+      {
+        "path": "/Users/stequar/Documents/agentic_company_os/docs/wiki/engineering/architecture.md",
+        "status": "CREATED",
+        "sha256": "50afea11d5b46dadaaf6f4ab5c8ef64e44392e716bb2f8d9b5680789fbd06bb0"
+      }
+    ],
+    "summary": "Attach completed: 6 files processed (1 created, 0 skipped unchanged, 5 backed up & overwritten, 0 overwritten).",
+    "attachedAt": "2026-11-04T14:55:27.400Z"
+  },
+  "driftReport": {
+    "targetPath": "/Users/stequar/Documents/agentic_company_os",
+    "hasDrift": false,
+    "findings": [],
+    "inspectedFiles": []
+  },
+  "contractSyncResult": {
+    "pythonCode": "# Auto-generated by Agentic Company OS — Cross-Domain Contract Synchronizer\n# Contract: Fitness Project Cross-Domain API Contract (v1.0.0)\nfrom datetime import datetime\nfrom typing import Optional\nfrom uuid import UUID\nfrom pydantic import BaseModel, ConfigDict, Field\n\nclass Exercise(BaseModel):\n    \"\"\"Modello sincronizzato per gli esercizi fitness (FastAPI <-> SwiftUI)\"\"\"\n    model_config = ConfigDict(\n        populate_by_name=True,\n        from_attributes=True,\n    )\n\n    id: UUID = Field(..., description=\"Identificativo univoco UUID\")\n    name: str = Field(..., description=\"Nome dell'esercizio\")\n    muscle_group: str = Field(..., alias=\"muscleGroup\", description=\"Gruppo muscolare target\")\n    gif_url: str = Field(..., alias=\"gifUrl\", description=\"URL dell'animazione dimostrativa\")\n    equipment: Optional[str] = Field(default=None, description=\"Attrezzatura richiesta opzionale\")\n    created_at: datetime = Field(..., alias=\"createdAt\", description=\"Timestamp di creazione\")\n\nclass UserProfile(BaseModel):\n    \"\"\"Profilo biometrico e anagrafico dell'utente fitness\"\"\"\n    model_config = ConfigDict(\n        populate_by_name=True,\n        from_attributes=True,\n    )\n\n    id: UUID = Field(..., description=\"UUID utente\")\n    name: str = Field(..., description=\"Nome completo\")\n    email: str = Field(..., description=\"Indirizzo email\")\n    age: int = Field(..., description=\"Età in anni\")\n    weight_kg: float = Field(..., alias=\"weightKg\", description=\"Peso corporeo in kg\")\n    height_cm: float = Field(..., alias=\"heightCm\", description=\"Altezza in cm\")\n",
+    "swiftCode": "// Auto-generated by Agentic Company OS — Cross-Domain Contract Synchronizer\n// Contract: Fitness Project Cross-Domain API Contract (v1.0.0)\nimport Foundation\n\n/// Modello sincronizzato per gli esercizi fitness (FastAPI <-> SwiftUI)\npublic struct Exercise: Codable, Sendable, Hashable, Identifiable {\n    public let id: UUID\n    public let name: String\n    public let muscleGroup: String\n    public let gifUrl: String\n    public let equipment: String?\n    public let createdAt: Date\n\n    nonisolated private enum CodingKeys: String, CodingKey {\n        case id\n        case name\n        case muscleGroup = \"muscle_group\"\n        case gifUrl = \"gif_url\"\n        case equipment\n        case createdAt = \"created_at\"\n    }\n}\n\n/// Profilo biometrico e anagrafico dell'utente fitness\npublic struct UserProfile: Codable, Sendable, Hashable, Identifiable {\n    public let id: UUID\n    public let name: String\n    public let email: String\n    public let age: Int\n    public let weightKg: Double\n    public let heightCm: Double\n\n    nonisolated private enum CodingKeys: String, CodingKey {\n        case id\n        case name\n        case email\n        case age\n        case weightKg = \"weight_kg\"\n        case heightCm = \"height_cm\"\n    }\n}\n",
+    "modelsSynced": [
+      "Exercise",
+      "UserProfile"
+    ],
+    "writtenFiles": [],
+    "sha256Python": "0acf230530ecdbb16a0b38ea2e2175757d51355034cfe6d408f9270381c6aa82",
+    "sha256Swift": "c83453d65a5f01665bef4c3419a8b4ea74fc6542265251a5d1f4ec6fa9cc36e0"
+  },
+  "synthesizedMcpTools": [
+    {
+      "toolId": "tool_dyn_domain_invariant_and_drift_checker",
+      "name": "domain_invariant_and_drift_checker",
+      "description": "JIT synthesized MCP tool to validate bounded context invariants and schema parity",
+      "generatedByRole": "ai_lead",
+      "sandboxType": "NODE_WORKER",
+      "permissions": [],
+      "inputSchemaJson": "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"boundedContext\":{\"type\":\"string\"},\"targetFile\":{\"type\":\"string\"}},\"required\":[\"boundedContext\"],\"additionalProperties\":false}",
+      "ttlSeconds": 3600,
+      "status": "HOT_LOADED",
+      "createdAt": "2026-11-04T14:55:27.408Z"
+    }
+  ],
+  "invariantsPath": "/Users/stequar/Documents/agentic_company_os/.company-os/invariants.json",
+  "orgChartPath": "/Users/stequar/Documents/agentic_company_os/.company-os/org-chart.json",
+  "contractsPath": "/Users/stequar/Documents/agentic_company_os/.company-os/contracts.json",
+  "configPath": "/Users/stequar/Documents/agentic_company_os/.company-os/config.json",
+  "ceremonyId": "CEREMONY-BRAINSTORMING_KICKOFF-1793804127449",
+  "idempotencyVerified": true,
+  "completedAt": "2026-11-04T14:55:27.450Z"
+}

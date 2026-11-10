@@ -1,0 +1,63 @@
+{
+  "name": "@stequar/agentic-system-os",
+  "version": "1.0.0",
+  "description": "Agentic System OS — multi-agent software-engineering orchestrator with a Tri-Ring domain ontology, typed Zod contracts, a deterministic Gatekeeper (regex diff-guard + heuristic static scanner), and native Claude Code & OpenAI Codex support.",
+  "type": "module",
+  "main": "dist/lib.js",
+  "module": "dist/lib.js",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/lib.d.ts",
+      "import": "./dist/lib.js"
+    },
+    "./cli": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "agentic-system-os": "dist/index.js",
+    "agentic_system_os": "dist/index.js",
+    "agentic-os": "dist/index.js",
+    "agentic-company": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "ai-agents",
+    "orchestration",
+    "multi-agent",
+    "claude-code",
+    "codex",
+    "context-engineering",
+    "typescript",
+    "zod",
+    "mcp"
+  ],
+  "author": "Stefano Quarta",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

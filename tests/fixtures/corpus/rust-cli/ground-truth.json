@@ -1,0 +1,1 @@
+{"languages":["rust"],"frameworks":[],"hasDocker":false,"packageManagers":["cargo"],"testCommandIncludes":"cargo test"}

@@ -1,0 +1,41 @@
+import { z } from "zod";
+export const CompanyEventLevelSchema = z.enum(["info", "warn", "error", "critical"]);
+export const CompanyEventTypeSchema = z.enum([
+    "SESSION_STARTED",
+    "SESSION_RESUMED",
+    "TASK_STARTED",
+    "TASK_COMPLETED",
+    "TASK_FAILED",
+    "GATEKEEPER_TRIGGERED",
+    "GATEKEEPER_PASSED",
+    "GATEKEEPER_FAILED",
+    "SELF_HEALING_ITERATION",
+    "DIFF_GUARD_VIOLATION",
+    "ROLLBACK_EXECUTED",
+    "SECURITY_ALERT",
+    "CHECKPOINT_SAVED",
+    "DEPENDENCY_AUDIT_RESULT",
+    "TICKET_STATUS_CHANGED",
+    "CONTRACT_VIOLATION",
+    "METRICS_CALCULATED",
+    "CONTEXT_HEALTH_ALERT",
+    "FINOPS_ALERT",
+    "BUDGET_WARNING",
+    "BUDGET_EXCEEDED",
+    "CEREMONY_STARTED",
+    "CEREMONY_CONCLUDED",
+    "WAR_ROOM_TRIGGERED",
+    "WAR_ROOM_RESOLVED",
+    "CONSENSUS_REACHED",
+    "TIE_BREAK_INVOKED",
+]);
+export const CompanyEventSchema = z.object({
+    id: z.string().uuid().describe("Identificativo univoco dell'evento"),
+    timestamp: z.string().datetime().describe("Data e ora ISO dell'evento"),
+    type: CompanyEventTypeSchema.or(z.string()),
+    sourceAgent: z.string().describe("Agente o componente che ha generato l'evento"),
+    level: CompanyEventLevelSchema.default("info"),
+    payload: z.record(z.any()).default({}),
+    sessionId: z.string().optional(),
+});
+//# sourceMappingURL=events.js.map

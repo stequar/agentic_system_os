@@ -1,0 +1,1 @@
+{"version":3,"file":"loader.d.ts","sourceRoot":"","sources":["../../src/plugins/loader.ts"],"names":[],"mappings":"AAEA,OAAO,EAEL,KAAK,cAAc,EACpB,MAAM,yBAAyB,CAAC;AAEjC;;;GAGG;AACH,wBAAsB,kBAAkB,CAAC,iBAAiB,EAAE,MAAM,GAAG,OAAO,CAAC,cAAc,CAAC,CAiD3F;AAED;;;GAGG;AACH,wBAAsB,wBAAwB,CAAC,OAAO,EAAE,MAAM,GAAG,OAAO,CAAC,cAAc,EAAE,CAAC,CA+BzF"}

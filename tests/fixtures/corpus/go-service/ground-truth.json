@@ -1,0 +1,1 @@
+{"languages":["go"],"frameworks":[],"hasDocker":false,"packageManagers":["go"],"testCommandIncludes":"go test"}

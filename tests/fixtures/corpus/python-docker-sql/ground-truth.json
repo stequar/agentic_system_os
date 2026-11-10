@@ -1,0 +1,1 @@
+{"languages":["python","sql"],"frameworks":[],"hasDocker":true,"packageManagers":["pip"],"testCommandIncludes":"pytest"}

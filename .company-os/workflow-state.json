@@ -1,0 +1,14 @@
+{
+  "targetPath": "/Users/stequar/Documents/agentic_company_os",
+  "activeMode": "MODE_4_BUILD_GATEKEEPER",
+  "fsmState": "SPECIFY",
+  "stimulusType": "NORMAL_SPRINT",
+  "lastRoutedScope": [
+    ".agents/skills/investigate-anomaly/SKILL.md"
+  ],
+  "lastSummonedSpecialists": [
+    "governance_workflow_specialist",
+    "ast_gatekeeper_specialist"
+  ],
+  "updatedAt": "2026-11-11T11:34:52.505Z"
+}

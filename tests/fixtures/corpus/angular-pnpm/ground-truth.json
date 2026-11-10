@@ -1,0 +1,1 @@
+{"languages":["typescript"],"frameworks":["angular"],"hasDocker":false,"packageManagers":["pnpm"],"testCommandIncludes":"pnpm test"}

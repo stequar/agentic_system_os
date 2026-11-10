@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "title": "Fitness Project Cross-Domain API Contract",
+  "basePath": "/api/v1",
+  "models": [
+    {
+      "modelName": "Exercise",
+      "description": "Modello sincronizzato per gli esercizi fitness (FastAPI <-> SwiftUI)",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true,
+          "description": "Identificativo univoco UUID"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Nome dell'esercizio"
+        },
+        {
+          "name": "muscle_group",
+          "type": "string",
+          "required": true,
+          "description": "Gruppo muscolare target"
+        },
+        {
+          "name": "gif_url",
+          "type": "string",
+          "required": true,
+          "description": "URL dell'animazione dimostrativa"
+        },
+        {
+          "name": "equipment",
+          "type": "string",
+          "required": false,
+          "description": "Attrezzatura richiesta opzionale"
+        },
+        {
+          "name": "created_at",
+          "type": "datetime",
+          "required": true,
+          "description": "Timestamp di creazione"
+        }
+      ]
+    },
+    {
+      "modelName": "UserProfile",
+      "description": "Profilo biometrico e anagrafico dell'utente fitness",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true,
+          "description": "UUID utente"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Nome completo"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "description": "Indirizzo email"
+        },
+        {
+          "name": "age",
+          "type": "int",
+          "required": true,
+          "description": "Età in anni"
+        },
+        {
+          "name": "weight_kg",
+          "type": "float",
+          "required": true,
+          "description": "Peso corporeo in kg"
+        },
+        {
+          "name": "height_cm",
+          "type": "float",
+          "required": true,
+          "description": "Altezza in cm"
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/exercises",
+      "method": "GET",
+      "summary": "Restituisce il catalogo degli esercizi sincronizzati",
+      "responseBodySchema": {
+        "items": "Exercise[]"
+      },
+      "authRequired": false
+    },
+    {
+      "path": "/users/profile",
+      "method": "GET",
+      "summary": "Restituisce il profilo biometrico dell'utente autenticato",
+      "responseBodySchema": {
+        "profile": "UserProfile"
+      },
+      "authRequired": true
+    }
+  ]
+}

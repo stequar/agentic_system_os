@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agentic-system-os": {
+      "command": "node",
+      "args": [
+        ".company-os/bin/agentic-os.mjs",
+        "mcp"
+      ]
+    }
+  }
+}

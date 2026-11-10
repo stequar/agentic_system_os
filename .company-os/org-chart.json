@@ -1,0 +1,299 @@
+{
+  "targetPath": "/Users/stequar/Documents/agentic_company_os",
+  "generatedAt": "2026-11-11T11:34:16.562Z",
+  "ring0CoreLeads": [
+    "cto",
+    "engineering_lead",
+    "product_lead",
+    "qa_lead",
+    "ai_lead",
+    "rnd_lead"
+  ],
+  "ring1TechSpecialists": [
+    {
+      "id": "backend_manager",
+      "title": "Backend Engineering Lead",
+      "ring": "RING_1_TECH_SPECIALIST",
+      "origin": "CATALOG",
+      "boundedContext": "Backend APIs, Persistence & Service Layer",
+      "domainKeywords": [
+        "fastapi",
+        "python",
+        "api",
+        "pydantic",
+        "backend"
+      ],
+      "domainScope": [],
+      "domainInvariants": [
+        "Every endpoint must validate schemas via Pydantic v2 with ConfigDict(populate_by_name=True)."
+      ],
+      "microRoleCard": "[RING-1: backend_manager] Python/FastAPI backend lead responsible for APIs, Pydantic v2 schemas, and hermetic tests.",
+      "testCommand": "pytest"
+    },
+    {
+      "id": "frontend_manager",
+      "title": "Frontend & TypeScript Engineering Lead",
+      "ring": "RING_1_TECH_SPECIALIST",
+      "origin": "CATALOG",
+      "boundedContext": "TypeScript Modules, Contracts & Frontend UI",
+      "domainKeywords": [
+        "typescript",
+        "react",
+        "frontend",
+        "zod",
+        "studio"
+      ],
+      "domainScope": [
+        "scripts/init-agile-ceremonies.ts",
+        "src/attach/harness-adapter.ts",
+        "src/attach/injector.ts",
+        "src/attach/smart-merge.ts",
+        "src/bootstrap/holistic-bootstrap.ts",
+        "src/cli/commands/attach.ts",
+        "src/cli/commands/bootstrap.ts",
+        "src/cli/commands/doctor.ts",
+        "src/cli/commands/init.ts",
+        "src/cli/commands/inspect.ts",
+        "src/cli/commands/mcp.ts",
+        "src/cli/commands/resume.ts",
+        "src/cli/commands/status.ts",
+        "src/cli/commands/studio.ts",
+        "src/cli/commands/workflow.ts"
+      ],
+      "domainInvariants": [
+        "Strict TypeScript compilation with zero errors and 100% passing npm test verification."
+      ],
+      "microRoleCard": "[RING-1: frontend_manager] TypeScript/Frontend Lead responsible for strict typing, module contracts, and npm test.",
+      "testCommand": "npm test"
+    },
+    {
+      "id": "mcp_cli_runtime_specialist",
+      "title": "MCP Server, Worker Sandbox & CLI Runtime Specialist",
+      "ring": "RING_1_TECH_SPECIALIST",
+      "origin": "OPEN_ENDED_SYNTHESIS",
+      "boundedContext": "MCP JSON-RPC Transport, JIT Tool Synthesis & CLI Dispatcher",
+      "domainKeywords": [
+        "mcp",
+        "cli",
+        "dispatcher",
+        "synthesizer",
+        "worker"
+      ],
+      "domainScope": [
+        "src/cli/commands/attach.ts",
+        "src/cli/commands/bootstrap.ts",
+        "src/cli/commands/doctor.ts",
+        "src/cli/commands/init.ts",
+        "src/cli/commands/inspect.ts",
+        "src/cli/commands/mcp.ts",
+        "src/cli/commands/resume.ts",
+        "src/cli/commands/status.ts",
+        "src/cli/commands/studio.ts",
+        "src/cli/commands/workflow.ts",
+        "src/cli/context.ts",
+        "src/cli/dispatcher.ts",
+        "src/cli/wizard.ts",
+        "src/mcp/client.ts",
+        "src/mcp/dynamic-registry.ts"
+      ],
+      "domainInvariants": [
+        "The MCP stdio transport must never be polluted by non-JSON-RPC logs, and dynamic tools must pass the pre-flight test in the Worker Sandbox."
+      ],
+      "microRoleCard": "[RING-1: mcp_cli_runtime_specialist] Synthesized specialist for the MCP Server/Client, JIT Tool Synthesis, and modular CLI architecture.",
+      "testCommand": "npm test"
+    },
+    {
+      "id": "database_sql_specialist",
+      "title": "Database & Relational SQL Schema Specialist",
+      "ring": "RING_1_TECH_SPECIALIST",
+      "origin": "OPEN_ENDED_SYNTHESIS",
+      "boundedContext": "Relational PostgreSQL/Supabase Schema & Migrations",
+      "domainKeywords": [
+        "sql",
+        "postgres",
+        "supabase",
+        "schema",
+        "database",
+        "migration"
+      ],
+      "domainScope": [
+        "tests/fixtures/corpus/python-docker-sql/schema.sql"
+      ],
+      "domainInvariants": [
+        "Every change to SQL tables (exercises, muscles, equipments, users) must preserve referential integrity and parity with the ORM/Pydantic models."
+      ],
+      "microRoleCard": "[RING-1: database_sql_specialist] Synthesized specialist for relational SQL architecture, migrations, and ORM alignment.",
+      "testCommand": "pytest"
+    },
+    {
+      "id": "devops_container_specialist",
+      "title": "Container & DevOps Runtime Specialist",
+      "ring": "RING_1_TECH_SPECIALIST",
+      "origin": "OPEN_ENDED_SYNTHESIS",
+      "boundedContext": "Docker Compose Topology & Local Service Orchestration",
+      "domainKeywords": [
+        "docker",
+        "compose",
+        "container",
+        "postgres"
+      ],
+      "domainScope": [
+        "tests/fixtures/corpus/python-docker-sql/ground-truth.json",
+        "tests/fixtures/corpus/python-docker-sql/requirements.txt",
+        "tests/fixtures/corpus/python-docker-sql/schema.sql"
+      ],
+      "domainInvariants": [
+        "Database containers must mount init scripts reproducibly and expose deterministic healthchecks."
+      ],
+      "microRoleCard": "[RING-1: devops_container_specialist] Synthesized specialist for Docker containerized infrastructure and service orchestration."
+    }
+  ],
+  "ring2DomainExperts": [
+    {
+      "id": "governance_workflow_specialist",
+      "title": "Multi-Agent Governance, Ceremonies & Consensus Specialist",
+      "ring": "RING_2_DOMAIN_EXPERT",
+      "origin": "SEMANTIC_MINED",
+      "boundedContext": "Agile Ceremonies, Anti-Echo-Chamber Consensus & Cognitive Forcing Functions",
+      "domainKeywords": [
+        "ceremony-dispatcher",
+        "consensus-engine",
+        "state-machine",
+        "workflow-eval",
+        "ceremonies",
+        "governance"
+      ],
+      "domainScope": [
+        ".agents/skills/investigate-anomaly/SKILL.md",
+        ".agents/skills/rnd-roundtable/SKILL.md",
+        "CLAUDE.md",
+        "docs/CEO_Dashboard.md",
+        "docs/wiki/engineering/spikes/sprint-17-5-validation.md",
+        "docs/wiki/engineering/spikes/sprint-17-8-validation.md",
+        "docs/wiki/product/backlog.md",
+        "docs/wiki/qa/fitness-project-eval-report.md",
+        "docs/wiki/qa/integration-eval-plan.md",
+        "docs/wiki/qa/workflow-eval-plan.md",
+        "docs/wiki/rnd/audits/agile-ceremonies-and-communication-efficiency.md",
+        "docs/wiki/rnd/rfcs/RFC-005-AGILE-CEREMONIES-AND-COLLABORATION-PROTOCOL.md",
+        "docs/wiki/rnd/rfcs/RFC-007-BROWNFIELD-SYMBIOSIS-AND-SMART-ADOPTION.md",
+        "docs/wiki/rnd/roundtables/2026-11-roundtable-rfc-007.md",
+        "scripts/init-agile-ceremonies.ts",
+        "src/attach/harness-adapter.ts",
+        "src/attach/injector.ts",
+        "src/bootstrap/holistic-bootstrap.ts",
+        "src/cli/commands/workflow.ts",
+        "src/contracts/ceremonies.ts",
+        "src/contracts/workflow-eval.ts",
+        "src/core/ceremony-dispatcher.ts",
+        "src/core/consensus-engine.ts",
+        "src/core/state-machine.ts",
+        "src/eval/integration-harness.ts",
+        "src/eval/settings-eval-harness.ts",
+        "src/eval/workflow-eval-harness.ts",
+        "src/generator/roles.ts",
+        "src/inspector/ontologies/industry-clusters.ts"
+      ],
+      "domainInvariants": [
+        "Every anomaly or bug must pass the Cognitive Forcing Gate (MODE_2_INVESTIGATE_RCA -> MODE_3_RND_ROUNDTABLE) with CEO approval before entering MODE_4_BUILD_GATEKEEPER.",
+        "All agile ceremonies must dynamically convene Ring-1 and Ring-2 experts via resolveDomainAttendeesForScope."
+      ],
+      "microRoleCard": "[RING-2: governance_workflow_specialist] Custodian of the CTO state machine, the Cognitive Forcing Functions, the CeremonyDispatcher, and the ConsensusEngine.",
+      "testCommand": "npm test"
+    },
+    {
+      "id": "ast_gatekeeper_specialist",
+      "title": "Deterministic Regex Diff-Guard, Self-Healing & Sandbox Security Specialist",
+      "ring": "RING_2_DOMAIN_EXPERT",
+      "origin": "SEMANTIC_MINED",
+      "boundedContext": "Regex Diff Guard, Self-Healing Loop, Incident War Room & Worker Sandbox",
+      "domainKeywords": [
+        "ast-guard",
+        "self-healing",
+        "war-room",
+        "sandbox-runner",
+        "gatekeeper",
+        "quarantine"
+      ],
+      "domainScope": [
+        ".agents/skills/gatekeeper-audit/SKILL.md",
+        "docs/CEO_Dashboard.md",
+        "docs/wiki/engineering/spikes/sprint-19-validation.md",
+        "docs/wiki/engineering/spikes/sprint-22-validation.md",
+        "docs/wiki/product/backlog.md",
+        "docs/wiki/qa/integration-eval-plan.md",
+        "src/attach/injector.ts",
+        "src/contracts/gatekeeper-eval.ts",
+        "src/contracts/quarantine.ts",
+        "src/core/steering-engine.ts",
+        "src/eval/gatekeeper-efficacy-harness.ts",
+        "src/eval/integration-harness.ts",
+        "src/eval/safety-eval-harness.ts",
+        "src/eval/workflow-eval-harness.ts",
+        "src/gatekeeper/ast-guard.ts",
+        "src/gatekeeper/formal-prover.ts",
+        "src/gatekeeper/parsers/cargo.ts",
+        "src/gatekeeper/parsers/go.ts",
+        "src/gatekeeper/parsers/index.ts",
+        "src/gatekeeper/parsers/pytest.ts",
+        "src/gatekeeper/parsers/tsc.ts",
+        "src/gatekeeper/parsers/vitest.ts",
+        "src/gatekeeper/quarantine.ts",
+        "src/gatekeeper/runner.ts",
+        "src/gatekeeper/self-healing.ts",
+        "src/gatekeeper/tia.ts",
+        "src/gatekeeper/war-room.ts",
+        "src/mcp/sandbox-runner.ts",
+        "src/security/chaos-engine.ts",
+        "src/utils/diff-guard.ts"
+      ],
+      "domainInvariants": [
+        "The Regex Diff Guard must block any removal of tests or assertions (Test Preservation Invariant) and any out-of-scope changes.",
+        "Every 3/3 failure of the Self-Healing loop must trigger the Incident War Room with an atomic SHA-256 rollback."
+      ],
+      "microRoleCard": "[RING-2: ast_gatekeeper_specialist] Guardian of the Deterministic Gatekeeper, the Regex Diff Guard, the Incident War Room, and Worker-sandbox security.",
+      "testCommand": "npm test"
+    },
+    {
+      "id": "context_finops_specialist",
+      "title": "Karpathy Context-as-RAM, Prompt Caching & FinOps Specialist",
+      "ring": "RING_2_DOMAIN_EXPERT",
+      "origin": "SEMANTIC_MINED",
+      "boundedContext": "Two-Tier Prefix Caching, Anti-Rot Compaction & Token FinOps Telemetry",
+      "domainKeywords": [
+        "finops-engine",
+        "context-compactor",
+        "prompt-cache-adapter",
+        "context-health",
+        "budget-watchdog",
+        "finops"
+      ],
+      "domainScope": [
+        "docs/CEO_Dashboard.md",
+        "docs/wiki/engineering/spikes/sprint-11-validation.md",
+        "docs/wiki/engineering/spikes/sprint-17-5-validation.md",
+        "docs/wiki/engineering/spikes/sprint-21-validation.md",
+        "docs/wiki/product/backlog.md",
+        "docs/wiki/product/roadmap.md",
+        "docs/wiki/rnd/rfcs/RFC-007-BROWNFIELD-SYMBIOSIS-AND-SMART-ADOPTION.md",
+        "docs/wiki/rnd/roundtables/2026-11-roundtable-rfc-007.md",
+        "src/cli/commands/workflow.ts",
+        "src/contracts/finops.ts",
+        "src/core/budget-watchdog.ts",
+        "src/core/context-compactor.ts",
+        "src/core/context-health.ts",
+        "src/core/finops-engine.ts",
+        "src/core/prompt-cache-adapter.ts",
+        "src/distillation/quad-tier-dispatcher.ts",
+        "src/gatekeeper/self-healing.ts",
+        "src/studio/server.ts"
+      ],
+      "domainInvariants": [
+        "Threshold context compaction must preserve 100% of the ticket and target-file invariants (verifyContextInvariants).",
+        "The token budget must honor the BudgetWatchdog with 100% Safe-Pause and real-time FinOps tracking."
+      ],
+      "microRoleCard": "[RING-2: context_finops_specialist] Architect of the Karpathy Context-as-RAM principle, Tier-1/Tier-2 Prompt Caching, Anti-Rot Compaction, and FinOps.",
+      "testCommand": "npm test"
+    }
+  ]
+}
