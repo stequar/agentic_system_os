@@ -53,6 +53,30 @@ async function createIsolatedFitnessCloneForWorkflowEval(): Promise<string> {
   return tmpClone;
 }
 
+/**
+ * Copies only the governance artifacts the harness inspects into a throwaway directory,
+ * so the eval never writes into this repository (audit log, workflow state, scorecard).
+ */
+async function createIsolatedSelfHostingCopy(): Promise<string> {
+  const osRoot = path.resolve(process.cwd());
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "os-wf-eval-self-"));
+  await fs.copyFile(path.join(osRoot, "AGENTS.md"), path.join(tmp, "AGENTS.md"));
+  await fs.cp(path.join(osRoot, ".agents", "skills"), path.join(tmp, ".agents", "skills"), {
+    recursive: true,
+  });
+  await fs.mkdir(path.join(tmp, "docs"), { recursive: true });
+  await fs.copyFile(
+    path.join(osRoot, "docs", "CEO_Dashboard.md"),
+    path.join(tmp, "docs", "CEO_Dashboard.md")
+  );
+  await fs.mkdir(path.join(tmp, ".company-os"), { recursive: true });
+  for (const f of ["org-chart.json", "invariants.json", "config.json", "workflow-state.json", "settings.json"]) {
+    const src = path.join(osRoot, ".company-os", f);
+    if (fsSync.existsSync(src)) await fs.copyFile(src, path.join(tmp, ".company-os", f));
+  }
+  return tmp;
+}
+
 describe("Sprint 17.6 — Executive & R&D Operating Protocol v2, Self-Hosting DNA & Workflow Behavioral Eval (`W1..W7`)", () => {
   it("should enforce Cognitive Forcing Functions Gate in CompanyStateMachine and reject premature transitions on anomalies", async () => {
     expect(CtoOperatingModeSchema.parse("MODE_2_INVESTIGATE_RCA")).toBe(
@@ -108,21 +132,104 @@ describe("Sprint 17.6 — Executive & R&D Operating Protocol v2, Self-Hosting DN
     expect(fsm.getOperatingMode()).toBe("MODE_4_BUILD_GATEKEEPER");
   });
 
-  it("should certify 100/100 (WORKFLOW_CERTIFIED) across all 7 axes (W1..W7) on agentic_company_os (Self-Hosting)", async () => {
-    const osRoot = path.resolve(process.cwd());
-    const scorecard = await runWorkflowBehavioralEval(osRoot);
-    const parsed = WorkflowEvalScorecardSchema.parse(scorecard);
+  it("should pass scripted conformance 100/100 (SCRIPTED_CONFORMANCE_PASSED) across all 7 axes (W1..W7) on agentic_company_os (Self-Hosting)", async () => {
+    const osCopy = await createIsolatedSelfHostingCopy();
+    try {
+      const scorecard = await runWorkflowBehavioralEval(osCopy);
+      const parsed = WorkflowEvalScorecardSchema.parse(scorecard);
 
-    expect(parsed.overallScore).toBe(100);
-    expect(parsed.verdict).toBe("WORKFLOW_CERTIFIED");
-    expect(parsed.axes).toHaveLength(7);
-    for (const axis of parsed.axes) {
-      expect(axis.passed).toBe(true);
-      expect(axis.score).toBe(100);
+      expect(parsed.overallScore).toBe(100);
+      expect(parsed.verdict).toBe("SCRIPTED_CONFORMANCE_PASSED");
+      expect(parsed.evaluationKind).toBe("SCRIPTED_CONFORMANCE");
+      expect(parsed.measuresRealAgentRuns).toBe(false);
+      expect(parsed.axes).toHaveLength(7);
+      for (const axis of parsed.axes) {
+        expect(axis.passed).toBe(true);
+        expect(axis.score).toBe(100);
+      }
+
+      // The CLI calls made by the harness must land in the eval channel only.
+      expect(fsSync.existsSync(path.join(osCopy, ".company-os", "audit.eval.jsonl"))).toBe(true);
+      expect(fsSync.existsSync(path.join(osCopy, ".company-os", "audit.jsonl"))).toBe(false);
+      expect(process.env.AGENTIC_OS_AUDIT_CHANNEL).toBeUndefined();
+    } finally {
+      await fs.rm(osCopy, { recursive: true, force: true });
     }
   });
 
-  it("should certify 100/100 (WORKFLOW_CERTIFIED) across all 7 axes (W1..W7) on fitness_project after Clean-Slate Reset + Holistic Bootstrap", async () => {
+  // The harness must be able to FAIL. Each case breaks one subsystem in an isolated
+  // copy and expects the corresponding axis (and the verdict) to go red, with no
+  // partial credit for the failed axis.
+  const breakages: Array<{
+    name: string;
+    expectFailedAxes: string[];
+    breakIt: (dir: string) => Promise<void>;
+  }> = [
+    {
+      name: "a skill loses its YAML frontmatter",
+      expectFailedAxes: ["W1_SESSION_BOOT_AND_CTO_PERSONA", "W6_SELF_HOSTING_SYMMETRY"],
+      breakIt: async (dir) => {
+        const p = path.join(dir, ".agents", "skills", "rnd-roundtable", "SKILL.md");
+        const txt = await fs.readFile(p, "utf-8");
+        await fs.writeFile(p, txt.split(/\r?\n/).slice(4).join("\n"), "utf-8");
+      },
+    },
+    {
+      name: "the Cognitive Forcing Functions are missing from AGENTS.md",
+      expectFailedAxes: ["W2_COGNITIVE_FORCING_FUNCTIONS_GATE", "W6_SELF_HOSTING_SYMMETRY"],
+      breakIt: async (dir) => {
+        const p = path.join(dir, "AGENTS.md");
+        const txt = await fs.readFile(p, "utf-8");
+        await fs.writeFile(p, txt.replaceAll("CFF-3", "CFF-X"), "utf-8");
+      },
+    },
+    {
+      name: "a Ring-2 expert in the org chart is a ghost role (absent from AGENTS.md)",
+      expectFailedAxes: ["W3_TRI_RING_SYNC_AND_SCOPE_ROUTING", "W6_SELF_HOSTING_SYMMETRY"],
+      breakIt: async (dir) => {
+        const p = path.join(dir, "AGENTS.md");
+        const txt = await fs.readFile(p, "utf-8");
+        await fs.writeFile(p, txt.replaceAll("ast_gatekeeper_specialist", "removed_role"), "utf-8");
+      },
+    },
+    {
+      name: "the domain invariants file is empty",
+      expectFailedAxes: ["W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT"],
+      breakIt: async (dir) => {
+        await fs.writeFile(
+          path.join(dir, ".company-os", "invariants.json"),
+          JSON.stringify({ domainInvariants: [] }),
+          "utf-8"
+        );
+      },
+    },
+  ];
+
+  for (const breakage of breakages) {
+    it(`should FAIL (NEEDS_REMEDIATION, no partial credit) when ${breakage.name}`, async () => {
+      const osCopy = await createIsolatedSelfHostingCopy();
+      try {
+        await breakage.breakIt(osCopy);
+        const parsed = WorkflowEvalScorecardSchema.parse(
+          await runWorkflowBehavioralEval(osCopy)
+        );
+
+        expect(parsed.verdict).toBe("NEEDS_REMEDIATION");
+        expect(parsed.overallScore).toBeLessThan(100);
+        const failedAxes = parsed.axes.filter((a) => !a.passed).map((a) => a.axisId);
+        for (const expected of breakage.expectFailedAxes) {
+          expect(failedAxes).toContain(expected);
+        }
+        for (const axis of parsed.axes.filter((a) => !a.passed)) {
+          expect(axis.score).toBe(0);
+        }
+      } finally {
+        await fs.rm(osCopy, { recursive: true, force: true });
+      }
+    });
+  }
+
+  it("should pass scripted conformance 100/100 (SCRIPTED_CONFORMANCE_PASSED) across all 7 axes (W1..W7) on fitness_project after Clean-Slate Reset + Holistic Bootstrap", async () => {
     const isolatedFitness = await createIsolatedFitnessCloneForWorkflowEval();
     try {
       await resetTargetWorkspaceToCleanSlate(isolatedFitness);
@@ -136,7 +243,7 @@ describe("Sprint 17.6 — Executive & R&D Operating Protocol v2, Self-Hosting DN
       const parsed = WorkflowEvalScorecardSchema.parse(scorecard);
 
       expect(parsed.overallScore).toBe(100);
-      expect(parsed.verdict).toBe("WORKFLOW_CERTIFIED");
+      expect(parsed.verdict).toBe("SCRIPTED_CONFORMANCE_PASSED");
       expect(parsed.axes).toHaveLength(7);
       for (const axis of parsed.axes) {
         expect(axis.passed).toBe(true);

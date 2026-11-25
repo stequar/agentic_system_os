@@ -1,5 +1,7 @@
 # 🧭 Piano di Valutazione Comportamentale del Workflow (`W1..W7`) — Executive & R&D Operating Protocol v2
 
+> **Reclassified 2026-11-14 — scripted conformance, not certification.** This harness replays inputs it authors itself (tickets, ceremonies, red-team verdicts) through deterministic code and inspects generated files. It does not observe a real agent run. The top verdict is now `SCRIPTED_CONFORMANCE_PASSED` (formerly `WORKFLOW_CERTIFIED`), failed axes score 0 instead of partial credit, and its audit entries go to `.company-os/audit.eval.jsonl`. Scores recorded before this date are not evidence of agent behaviour.
+
 > **Sprint 17.6:** *The Executive & R&D Operating Protocol v2, 100% Self-Hosting DNA & Workflow Behavioral Eval Harness (`W1..W7`)*.
 > Questo documento definisce il protocollo formale di valutazione comportamentale e deterministica del workflow multi-agente, applicato simmetricamente sia al repository madre (`agentic_company_os`) sia ai repository target adottati (`fitness_project`).
 

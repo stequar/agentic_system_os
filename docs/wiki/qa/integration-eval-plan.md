@@ -1,5 +1,7 @@
 # 🧪 Zero-Hint Integration Evaluation Framework (`E1..E6`)
 
+> **Reclassified 2026-11-14 — scripted conformance, not certification.** This harness replays inputs it authors itself (tickets, ceremonies, red-team verdicts) through deterministic code and inspects generated files. It does not observe a real agent run. The top verdict is now `SCRIPTED_CONFORMANCE_PASSED` (formerly `CERTIFIED_EXCELLENT`), failed axes score 0 instead of partial credit, and its audit entries go to `.company-os/audit.eval.jsonl`. Scores recorded before this date are not evidence of agent behaviour.
+
 **Documento ID:** `QA-EVAL-PLAN-2026-V1`  
 **Autori:** QA Lead (`qa_lead`), Engineering Lead (`engineering_lead`), AI Lead (`ai_lead`)  
 **Stato:** `ACTIVE_STANDARD`  

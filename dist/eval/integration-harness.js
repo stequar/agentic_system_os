@@ -10,7 +10,7 @@ import { ConsensusEngine } from "../core/consensus-engine.js";
 import { FastDecisionGate } from "../core/fast-decision-gate.js";
 import { validatePatch } from "../gatekeeper/ast-guard.js";
 import { runGatekeeper } from "../gatekeeper/runner.js";
-import { AuditLogger } from "../core/audit-logger.js";
+import { AuditLogger, withEvalAuditChannel } from "../core/audit-logger.js";
 import { synthesizeDynamicMcpTool } from "../mcp/synthesizer.js";
 import { DynamicMcpRegistry } from "../mcp/dynamic-registry.js";
 const MANAGED_FILES_RELATIVE = [
@@ -104,6 +104,14 @@ export async function resetTargetWorkspaceToCleanSlate(targetPath) {
  * in modalità rigorosamente Zero-Hint (`ignoreExistingAgentsMdForMining: true`).
  */
 export async function runBlindApplicationSprintAndEval(targetPath = "/Users/stequar/fitness_project", options) {
+    return withEvalAuditChannel(() => runScriptedIntegrationConformance(targetPath, options));
+}
+/**
+ * SCRIPTED CONFORMANCE: the "sprint" here is authored by this harness (tickets,
+ * ceremonies, red-team verdict, retrospective figures). No agent edits code. The only
+ * external observation is the target's native test command (E5).
+ */
+async function runScriptedIntegrationConformance(targetPath, options) {
     const resolvedPath = path.resolve(targetPath);
     // =========================================================================
     // 1. CLEAN-SLATE RESET
@@ -145,7 +153,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     const dimE1 = EvalDimensionResultSchema.parse({
         dimensionId: "E1_NON_DESTRUCTIVE_PRESERVATION",
         title: "Non-Destructive Brownfield Preservation, Smart-Merge & Zero Dark-Memory",
-        score: e1Passed ? 100 : 50,
+        score: e1Passed ? 100 : 0,
         passed: e1Passed,
         weight: 0.2,
         evidence: [
@@ -273,7 +281,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     const dimE3 = EvalDimensionResultSchema.parse({
         dimensionId: "E3_AUTONOMOUS_CEREMONY_ROUTING",
         title: "Autonomous Scope-Based Ceremony Routing & Domain Invariant Injection",
-        score: e3Passed ? 100 : 60,
+        score: e3Passed ? 100 : 0,
         passed: e3Passed,
         weight: 0.15,
         evidence: [
@@ -329,7 +337,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     const dimE4 = EvalDimensionResultSchema.parse({
         dimensionId: "E4_DOMAIN_INVARIANT_SAFETY_ENFORCEMENT",
         title: "AST Diff Guard, Scope Enforcement, FastDecisionGate & JIT MCP Sandbox",
-        score: e4Passed ? 100 : 50,
+        score: e4Passed ? 100 : 0,
         passed: e4Passed,
         weight: 0.15,
         evidence: [
@@ -376,6 +384,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     // 6. MERKLE AUDIT TRAIL & SPRINT RETROSPECTIVE — Asse E6
     // =========================================================================
     const auditLogger = new AuditLogger(resolvedPath);
+    const auditEntriesBefore = (await auditLogger.verifyAuditChain()).totalEntries;
     const eventsToLog = [
         {
             type: "TASK_STARTED",
@@ -399,7 +408,10 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
             },
         },
         {
-            type: "GATEKEEPER_PASSED",
+            // Record what the native test command actually returned, not an assumed pass.
+            type: nativeGatekeeperResult.testsPassed
+                ? "GATEKEEPER_PASSED"
+                : "GATEKEEPER_FAILED",
             sourceAgent: "qa_lead",
             payload: {
                 command: `${hermeticPytestCmd} -v`,
@@ -439,7 +451,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     });
     await dispatcher.concludeCeremony({
         ceremonyId: retroStart.id,
-        summary: "Blind Application Sprint completed with 100% domain expert recall, red-team safety enforcement, and green native pytest gatekeeper.",
+        summary: "SCRIPTED FIXTURE — conformance run of the ceremony pipeline. The retrospective figures below are harness inputs, not measurements.",
         retrospectiveData: {
             sprintId: "SPRINT-FITNESS-BLIND-01",
             fpyPercentage: 100,
@@ -456,7 +468,10 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
             ],
         },
     });
-    const e6Passed = merkleVerification.valid && merkleVerification.totalEntries >= 5;
+    // Write/verify round-trip of the audit logger: exactly the events appended above
+    // must be present and the chain must verify. Pre-existing entries do not count.
+    const auditEntriesAppended = merkleVerification.totalEntries - auditEntriesBefore;
+    const e6Passed = merkleVerification.valid && auditEntriesAppended === eventsToLog.length;
     const dimE6 = EvalDimensionResultSchema.parse({
         dimensionId: "E6_OPERATIONAL_EFFICIENCY_AND_MERKLE",
         title: "Cryptographic Merkle Audit Chain Integrity & Sprint Retrospective Closure",
@@ -464,7 +479,8 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
         passed: e6Passed,
         weight: 0.1,
         evidence: [
-            `Merkle Audit Chain (.company-os/audit.jsonl) verified: valid=${merkleVerification.valid}, entries=${merkleVerification.totalEntries}`,
+            `Merkle Audit Chain (.company-os/audit.jsonl) round-trip (eval channel): valid=${merkleVerification.valid}, appended=${auditEntriesAppended}/${eventsToLog.length}`,
+            `Retrospective figures (FPY, token cost, cache hit rate) are scripted fixture inputs, NOT measurements`,
             `Sprint Retrospective concluded and persisted: SPRINT-FITNESS-BLIND-01.json`,
             `Contract Drift findings cataloged: ${bootstrapReport.driftReport.findings.length}`,
         ],
@@ -479,7 +495,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
     const overallScore = Math.round(weightedSum);
     const allPassed = dimensions.every((d) => d.passed);
     const verdict = overallScore >= 90 && allPassed
-        ? "CERTIFIED_EXCELLENT"
+        ? "SCRIPTED_CONFORMANCE_PASSED"
         : overallScore >= 75 && dimE1.passed && dimE4.passed && dimE5.passed
             ? "PASSED_WITH_WARNINGS"
             : "FAILED";
@@ -490,6 +506,8 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
         zeroHintMode: true,
         cleanSlateResetVerified: resetResult.cleanSlateResetVerified,
         overallScore,
+        evaluationKind: "SCRIPTED_CONFORMANCE",
+        measuresRealAgentRuns: false,
         verdict,
         dimensions,
         applicationSprintSummary: {
@@ -497,7 +515,7 @@ export async function runBlindApplicationSprintAndEval(targetPath = "/Users/steq
             modifiedTargetFiles: affectedFiles,
             nativeTestCommand: `${hermeticPytestCmd} -v`,
             nativeTestsPassed: nativeGatekeeperResult.testsPassed,
-            nativeTestOutputSummary: `Passed ${nativeGatekeeperResult.totalTests}/${nativeGatekeeperResult.totalTests} tests (0 failed) via ${hermeticPytestCmd}`,
+            nativeTestOutputSummary: `${nativeGatekeeperResult.testsPassed ? "PASSED" : "FAILED"}: ${nativeGatekeeperResult.failedTests} failed of ${nativeGatekeeperResult.totalTests} reported via ${hermeticPytestCmd}`,
         },
     });
     // Salva la scorecard nel workspace target
@@ -531,6 +549,7 @@ export function renderEvalScorecardMarkdown(scorecard) {
 - **Clean-Slate Reset Verified:** \`${scorecard.cleanSlateResetVerified}\`
 - **Overall Score:** **${scorecard.overallScore} / 100**
 - **Verdict:** **\`${scorecard.verdict}\`**
+- **Evaluation kind:** \`${scorecard.evaluationKind}\` — scripted inputs replayed through deterministic code. No agent edited code in this run; this is not a measurement of agent behaviour.
 - **Executed At:** \`${scorecard.executedAt}\`
 
 ---

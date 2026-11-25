@@ -11,6 +11,12 @@ export declare function canonicalJsonStringify(obj: any): string;
  * AuditLogger: gestisce la notarizzazione crittografica e la persistenza append-only
  * immutabile degli eventi aziendali su `.company-os/audit.jsonl` con Merkle Hash-Chaining e firma HMAC.
  */
+export declare const AUDIT_CHANNEL_ENV = "AGENTIC_OS_AUDIT_CHANNEL";
+/**
+ * Runs `fn` with all audit writes (including those made by CLI commands invoked
+ * in-process) routed to `.company-os/audit.eval.jsonl`, then restores the channel.
+ */
+export declare function withEvalAuditChannel<T>(fn: () => Promise<T>): Promise<T>;
 export declare class AuditLogger {
     private targetPath;
     private unsubscribeFromBus?;
@@ -18,6 +24,11 @@ export declare class AuditLogger {
     private lastHash;
     private lastSequenceNumber;
     constructor(targetPath: string);
+    /**
+     * Evaluation harnesses must not write into the production audit log, because
+     * dashboards and metrics are computed from it. While AGENTIC_OS_AUDIT_CHANNEL=eval
+     * is set (see withEvalAuditChannel) every logger reads and writes a separate file.
+     */
     getAuditLogPath(): string;
     getSecretPath(): string;
     /**

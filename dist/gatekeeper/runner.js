@@ -1,6 +1,7 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
 import { GatekeeperResultSchema, } from "../contracts/review.js";
+import { recordGatekeeperVerdict } from "../telemetry/run-trace.js";
 /**
  * Classifies a command string into typecheck, lint, or test/generic categories.
  */
@@ -200,6 +201,7 @@ export async function runGatekeeper(targetPath, testCommands, options) {
     let unparsedCommandsTotal = 0;
     let unparsedCommandsFailed = 0;
     const rawOutputChunks = [];
+    const commandOutcomes = [];
     for (let cmd of testCommands) {
         const { isTypecheck, isLint, isTest } = classifyCommand(cmd);
         // Se sono specificati file di test mirati (TIA inner-loop), applicali al comando di test
@@ -213,6 +215,11 @@ export async function runGatekeeper(targetPath, testCommands, options) {
         }
         const result = await executeCommand(cmd, targetPath, timeoutMs);
         const cmdPassed = !result.timedOut && result.exitCode === 0;
+        commandOutcomes.push({
+            command: cmd,
+            exitCode: Number.isInteger(result.exitCode) ? result.exitCode : -1,
+            timedOut: result.timedOut,
+        });
         if (isTypecheck && !cmdPassed) {
             typecheckPassed = false;
         }
@@ -286,6 +293,17 @@ export async function runGatekeeper(targetPath, testCommands, options) {
         failedTests,
         rawOutput,
     };
-    return GatekeeperResultSchema.parse(finalResult);
+    const validated = GatekeeperResultSchema.parse(finalResult);
+    // Observability: when a ticket is active, append what actually happened (process
+    // exit codes) to the ticket trace. Tracing must never change the gatekeeper result.
+    await recordGatekeeperVerdict(targetPath, {
+        commands: commandOutcomes,
+        typecheckPassed: validated.typecheckPassed,
+        linterPassed: validated.linterPassed,
+        testsPassed: validated.testsPassed,
+        totalTests: validated.totalTests,
+        failedTests: validated.failedTests,
+    }).catch(() => false);
+    return validated;
 }
 //# sourceMappingURL=runner.js.map

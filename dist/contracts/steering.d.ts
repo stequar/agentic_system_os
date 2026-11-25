@@ -11,16 +11,16 @@ export declare const SteeringCommandSchema: z.ZodObject<{
     source: z.ZodDefault<z.ZodEnum<["cli", "web-studio", "api"]>>;
 }, "strip", z.ZodTypeAny, {
     timestamp: string;
-    action: "pause" | "resume" | "hint" | "abort";
     source: "cli" | "web-studio" | "api";
+    action: "pause" | "resume" | "hint" | "abort";
     message?: string | undefined;
     proposedPatch?: Record<string, string> | undefined;
 }, {
     action: "pause" | "resume" | "hint" | "abort";
     message?: string | undefined;
     timestamp?: string | undefined;
-    proposedPatch?: Record<string, string> | undefined;
     source?: "cli" | "web-studio" | "api" | undefined;
+    proposedPatch?: Record<string, string> | undefined;
 }>;
 export type SteeringCommand = z.infer<typeof SteeringCommandSchema>;
 export declare const SteeringResultSchema: z.ZodObject<{

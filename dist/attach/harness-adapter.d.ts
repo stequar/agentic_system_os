@@ -6,6 +6,8 @@ export interface HarnessAdapterResult {
     humanTitle: string;
     orchestratorTitle: string;
     generatedFiles: string[];
+    /** Observability files (hook recorder + per-machine settings); empty on dry runs. */
+    telemetryHookFiles: string[];
 }
 export declare function resolvePersonaTitles(preset?: "ENGINEERING_PROFESSIONAL" | "STARTUP_EXECUTIVE"): {
     humanTitle: string;

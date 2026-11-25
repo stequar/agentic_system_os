@@ -7,6 +7,7 @@ import { SettingsEvalHarness } from "../../eval/settings-eval-harness.js";
 import { setupAgentHarnesses } from "../../attach/harness-adapter.js";
 import { CeremonyDispatcher } from "../../core/ceremony-dispatcher.js";
 import { AuditLogger } from "../../core/audit-logger.js";
+import { installClaudeCodeHookRecorder, readActiveTicket, readTrace, startTicket, } from "../../telemetry/run-trace.js";
 import { ToolScoper } from "../../core/tool-scoper.js";
 import { PromptCacheAdapter } from "../../core/prompt-cache-adapter.js";
 import { buildTwoTierPromptBundle } from "../../generator/templates/cached-kernel.js";
@@ -370,6 +371,64 @@ export async function workflowCommand(ctx, action, targetPath, options) {
         }
         return;
     }
+    if (action === "start-ticket") {
+        if (!options?.ticket) {
+            throw new Error("workflow start-ticket requires --ticket <id> (e.g. --ticket TCK-42).");
+        }
+        const ticket = await startTicket(resolvedPath, options.ticket);
+        const payload = { action: "start-ticket", targetPath: resolvedPath, ...ticket };
+        if (options?.json) {
+            ctx.stdout(JSON.stringify(payload, null, 2));
+        }
+        else {
+            ctx.stdout(`[WORKFLOW START-TICKET] ${ticket.ticketId} active (baseline ${ticket.baselineSha ?? "none — not a git repository"})`);
+        }
+        return;
+    }
+    if (action === "install-hooks") {
+        const result = await installClaudeCodeHookRecorder(resolvedPath);
+        const payload = { action: "install-hooks", targetPath: resolvedPath, ...result };
+        if (options?.json) {
+            ctx.stdout(JSON.stringify(payload, null, 2));
+        }
+        else {
+            ctx.stdout(`[WORKFLOW INSTALL-HOOKS] Recorder at ${result.scriptPath}; newly registered events: ${result.eventsRegistered.join(", ") || "none (already installed)"}. Payloads (prompts, code) stay in .company-os/telemetry/ on this machine.`);
+        }
+        return;
+    }
+    if (action === "trace") {
+        const active = await readActiveTicket(resolvedPath);
+        const ticketId = options?.ticket ?? active?.ticketId;
+        const records = await readTrace(resolvedPath, ticketId ? { ticketId } : undefined);
+        const bySource = {};
+        const byHookEvent = {};
+        for (const r of records) {
+            bySource[r.source] = (bySource[r.source] ?? 0) + 1;
+            const ev = r.payload.hook_event_name;
+            if (typeof ev === "string")
+                byHookEvent[ev] = (byHookEvent[ev] ?? 0) + 1;
+        }
+        const gatekeeperRuns = records
+            .filter((r) => r.source === "gatekeeper")
+            .map((r) => ({ recordedAt: r.recordedAt, ...r.payload }));
+        const payload = {
+            action: "trace",
+            targetPath: resolvedPath,
+            activeTicket: active,
+            ticketId: ticketId ?? null,
+            totalRecords: records.length,
+            bySource,
+            byHookEvent,
+            gatekeeperRuns,
+        };
+        if (options?.json) {
+            ctx.stdout(JSON.stringify(payload, null, 2));
+        }
+        else {
+            ctx.stdout(`[WORKFLOW TRACE] ticket=${ticketId ?? "all"} records=${records.length} gatekeeperRuns=${gatekeeperRuns.length}`);
+        }
+        return;
+    }
     if (action === "setup-harnesses") {
         const result = await setupAgentHarnesses(resolvedPath);
         const payload = {
@@ -384,6 +443,6 @@ export async function workflowCommand(ctx, action, targetPath, options) {
         }
         return;
     }
-    throw new Error(`Unknown workflow action '${action}'. Supported actions: status, route, verify-gate, settings, set-setting, eval-settings, setup-harnesses.`);
+    throw new Error(`Unknown workflow action '${action}'. Supported actions: status, route, verify-gate, settings, set-setting, eval-settings, setup-harnesses, start-ticket, install-hooks, trace.`);
 }
 //# sourceMappingURL=workflow.js.map

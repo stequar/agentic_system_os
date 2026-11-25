@@ -97,7 +97,12 @@ export const WorkflowEvalScorecardSchema = z.object({
   targetPath: z.string(),
   evaluatedAt: z.string().datetime(),
   overallScore: z.number().min(0).max(100),
-  verdict: z.enum(["WORKFLOW_CERTIFIED", "NEEDS_REMEDIATION"]),
+  // This harness replays scripted inputs through deterministic code paths and checks
+  // generated files. It does not observe a real agent run, so it certifies nothing
+  // about agent behaviour: the verdict and the two literals below say so explicitly.
+  evaluationKind: z.literal("SCRIPTED_CONFORMANCE").default("SCRIPTED_CONFORMANCE"),
+  measuresRealAgentRuns: z.literal(false).default(false),
+  verdict: z.enum(["SCRIPTED_CONFORMANCE_PASSED", "NEEDS_REMEDIATION"]),
   axes: z.array(WorkflowEvalAxisResultSchema).length(7),
 });
 

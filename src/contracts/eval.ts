@@ -49,7 +49,12 @@ export const IntegrationEvalScorecardSchema = z.object({
   zeroHintMode: z.literal(true),
   cleanSlateResetVerified: z.boolean(),
   overallScore: z.number().min(0).max(100),
-  verdict: z.enum(["CERTIFIED_EXCELLENT", "PASSED_WITH_WARNINGS", "FAILED"]),
+  // Scripted conformance run: ceremonies, consensus verdicts and sprint tickets are
+  // authored by the harness itself; only the native test command is a real observation.
+  // No agent edits code during this eval.
+  evaluationKind: z.literal("SCRIPTED_CONFORMANCE").default("SCRIPTED_CONFORMANCE"),
+  measuresRealAgentRuns: z.literal(false).default(false),
+  verdict: z.enum(["SCRIPTED_CONFORMANCE_PASSED", "PASSED_WITH_WARNINGS", "FAILED"]),
   dimensions: z.array(EvalDimensionResultSchema).length(6),
   applicationSprintSummary: ApplicationSprintSummarySchema,
 });

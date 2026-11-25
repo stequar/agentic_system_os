@@ -81,11 +81,14 @@ Questo file è il punto di ingresso per tutti i sub-agenti. **NON caricare l'int
 - **Modular CLI Architecture & Scaffolding Wizard:** `src/cli/` (`dispatcher.ts`, `context.ts`, `commands/`, `wizard.ts`)
 
 ## 🧪 Dipartimento Quality Assurance & Integration Eval
+- **Observability & Evaluation Honesty Plan (checkpoint 2026-11-14):** `docs/wiki/qa/observability-eval-plan.md`
 - **Zero-Hint Integration Evaluation Plan (`E1..E6`):** `docs/wiki/qa/integration-eval-plan.md`
 - **Workflow Behavioral Evaluation Plan (`W1..W7`):** `docs/wiki/qa/workflow-eval-plan.md`
 - **Fitness Project Blind Application Sprint Eval Report:** `docs/wiki/qa/fitness-project-eval-report.md`
-- **Integration Eval Harness (`E1..E6`):** `src/eval/integration-harness.ts`
-- **Workflow Behavioral Eval Harness (`W1..W7`):** `src/eval/workflow-eval-harness.ts`
+- **Integration Eval Harness (`E1..E6`):** `src/eval/integration-harness.ts` — *scripted conformance, does not observe real agent runs*
+- **Workflow Behavioral Eval Harness (`W1..W7`):** `src/eval/workflow-eval-harness.ts` — *scripted conformance, does not observe real agent runs*
+- **End-to-End Agent-Run Eval (real agent, code-based grading):** `src/eval/agent-run-harness.ts`, tasks in `tests/fixtures/agent-tasks/`, run with `npm run eval:agent -- --trials 5`; results and history in `.company-os/eval-runs/` (local, gitignored)
+- **Run Trace (ticket anchor, hook recorder, gatekeeper verdict):** `src/telemetry/run-trace.ts` — `workflow start-ticket --ticket <id>`, `workflow install-hooks`, `workflow trace`; data in `.company-os/telemetry/hook-events.jsonl` (local, may contain prompts and code)
 
 ---
 *Regola: Fail Loudly. Se una regola manca o è ambigua, fermati ed escala al livello superiore.*

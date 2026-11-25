@@ -293,12 +293,14 @@ export async function startStudioServer(options?: StartStudioOptions): Promise<S
         const tokensParam = parsedUrl.searchParams.get("tokens");
         let currentTokens = tokensParam ? parseInt(tokensParam, 10) : 0;
         if (isNaN(currentTokens) || currentTokens <= 0) {
-          const finops = FinOpsEngine.getInstance().getSummary();
-          currentTokens = finops.totalTokens > 0 ? finops.totalTokens : 12_500;
+          currentTokens = FinOpsEngine.getInstance().getSummary().totalTokens;
         }
-        const health = ContextHealthMeter.getInstance().getReport(currentTokens);
+        // No token figure from the caller and no recorded usage: there is nothing to score.
+        // Report that explicitly instead of scoring an invented token count.
+        const measured = currentTokens > 0;
+        const health = ContextHealthMeter.getInstance().getReport(measured ? currentTokens : 0);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(health));
+        res.end(JSON.stringify({ ...health, measured }));
       } catch (err: any) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message || String(err) }));

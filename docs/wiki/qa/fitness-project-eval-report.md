@@ -1,5 +1,7 @@
 # 📊 Zero-Hint Integration Evaluation Report — `fitness_project`
 
+> **Reclassified 2026-11-14 — scripted conformance, not certification.** This harness replays inputs it authors itself (tickets, ceremonies, red-team verdicts) through deterministic code and inspects generated files. It does not observe a real agent run. The top verdict is now `SCRIPTED_CONFORMANCE_PASSED` (formerly `CERTIFIED_EXCELLENT`), failed axes score 0 instead of partial credit, and its audit entries go to `.company-os/audit.eval.jsonl`. Scores recorded before this date are not evidence of agent behaviour.
+
 - **Eval ID:** `EVAL-BLIND-1793802166148`
 - **Target Repository:** `/Users/stequar/fitness_project`
 - **Zero-Hint Blind Mode:** `true` (`ignoreExistingAgentsMdForMining: true`)

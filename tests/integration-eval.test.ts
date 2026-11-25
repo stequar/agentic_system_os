@@ -126,7 +126,7 @@ describe("Zero-Hint Integration Evaluation Harness (`E1..E6`)", () => {
     }
   });
 
-  it("runBlindApplicationSprintAndEval should execute Clean-Slate Reset + Blind 5-Phase Bootstrap + Application Sprint and achieve 100/100 CERTIFIED_EXCELLENT across E1..E6", async () => {
+  it("runBlindApplicationSprintAndEval should execute Clean-Slate Reset + Blind 5-Phase Bootstrap + Application Sprint and achieve 100/100 SCRIPTED_CONFORMANCE_PASSED across E1..E6", async () => {
     const isolatedClone = await createIsolatedFitnessClone();
     try {
       const scorecard = await runBlindApplicationSprintAndEval(isolatedClone, {
@@ -137,7 +137,9 @@ describe("Zero-Hint Integration Evaluation Harness (`E1..E6`)", () => {
       expect(parsed.zeroHintMode).toBe(true);
       expect(parsed.cleanSlateResetVerified).toBe(true);
       expect(parsed.overallScore).toBe(100);
-      expect(parsed.verdict).toBe("CERTIFIED_EXCELLENT");
+      expect(parsed.verdict).toBe("SCRIPTED_CONFORMANCE_PASSED");
+      expect(parsed.evaluationKind).toBe("SCRIPTED_CONFORMANCE");
+      expect(parsed.measuresRealAgentRuns).toBe(false);
       expect(parsed.dimensions).toHaveLength(6);
 
       for (const dim of parsed.dimensions) {
@@ -149,6 +151,45 @@ describe("Zero-Hint Integration Evaluation Harness (`E1..E6`)", () => {
       expect(parsed.applicationSprintSummary.nativeTestCommand).toContain(
         ".venv/bin/pytest"
       );
+    } finally {
+      await fs.rm(isolatedClone, { recursive: true, force: true });
+    }
+  });
+
+  // The harness must be able to FAIL on a real observation: a red native test suite.
+  it("runBlindApplicationSprintAndEval should NOT pass when the target's native tests are red (E5 fails, no partial credit, failure recorded)", async () => {
+    const isolatedClone = await createIsolatedFitnessClone();
+    try {
+      const testsDir = path.join(isolatedClone, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "test_injected_red.py"),
+        "def test_injected_failure():\n    assert 1 == 2\n",
+        "utf-8"
+      );
+
+      const parsed = IntegrationEvalScorecardSchema.parse(
+        await runBlindApplicationSprintAndEval(isolatedClone, {
+          writeWikiReportToOsDir: isolatedClone,
+        })
+      );
+
+      const e5 = parsed.dimensions.find(
+        (d) => d.dimensionId.startsWith("E5")
+      )!;
+      expect(e5.passed).toBe(false);
+      expect(e5.score).toBe(0);
+      expect(parsed.verdict).not.toBe("SCRIPTED_CONFORMANCE_PASSED");
+      expect(parsed.overallScore).toBeLessThan(100);
+      expect(parsed.applicationSprintSummary.nativeTestsPassed).toBe(false);
+      expect(parsed.applicationSprintSummary.nativeTestOutputSummary).toContain("FAILED");
+
+      const evalAudit = await fs.readFile(
+        path.join(isolatedClone, ".company-os", "audit.eval.jsonl"),
+        "utf-8"
+      );
+      expect(evalAudit).toContain("GATEKEEPER_FAILED");
+      expect(evalAudit).not.toContain("GATEKEEPER_PASSED");
     } finally {
       await fs.rm(isolatedClone, { recursive: true, force: true });
     }

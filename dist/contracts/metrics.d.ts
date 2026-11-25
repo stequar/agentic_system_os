@@ -44,6 +44,7 @@ export declare const ProcessQualityMetricsSchema: z.ZodObject<{
     contractComplianceRate: z.ZodNumber;
     totalContractChecks: z.ZodNumber;
     contractViolations: z.ZodNumber;
+    contractChecksMeasured: z.ZodDefault<z.ZodBoolean>;
     totalAuditEvents: z.ZodNumber;
     auditChainIntact: z.ZodBoolean;
     calculatedAt: z.ZodDefault<z.ZodString>;
@@ -58,6 +59,7 @@ export declare const ProcessQualityMetricsSchema: z.ZodObject<{
     contractComplianceRate: number;
     totalContractChecks: number;
     contractViolations: number;
+    contractChecksMeasured: boolean;
     totalAuditEvents: number;
     auditChainIntact: boolean;
     calculatedAt: string;
@@ -74,6 +76,7 @@ export declare const ProcessQualityMetricsSchema: z.ZodObject<{
     contractViolations: number;
     totalAuditEvents: number;
     auditChainIntact: boolean;
+    contractChecksMeasured?: boolean | undefined;
     calculatedAt?: string | undefined;
 }>;
 export type ProcessQualityMetrics = z.infer<typeof ProcessQualityMetricsSchema>;

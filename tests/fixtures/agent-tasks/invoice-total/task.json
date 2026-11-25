@@ -1,0 +1,10 @@
+{
+  "id": "invoice-total",
+  "title": "Fix and harden computeInvoiceTotal",
+  "prompt": "The function `computeInvoiceTotal` in `src/invoice.js` is wrong and under-specified. Make it conform to this specification:\n\n- `lines` is an array of `{ unitPriceCents, quantity }`. `subtotalCents` is the sum of `unitPriceCents * quantity`. An empty array gives all zeros.\n- `options` is optional. `discountPct` and `taxPct` both default to 0.\n- `discountCents` is `discountPct` percent of the subtotal, rounded half up to the nearest cent.\n- Tax is applied AFTER the discount: `taxCents` is `taxPct` percent of `(subtotalCents - discountCents)`, rounded half up to the nearest cent.\n- `totalCents = subtotalCents - discountCents + taxCents`.\n- Throw `RangeError` if `discountPct` is outside 0..100 or `taxPct` is negative.\n- Throw `TypeError` if any line has a `unitPriceCents` or `quantity` that is not a non-negative integer.\n- Return `{ subtotalCents, discountCents, taxCents, totalCents }`.\n\nOnly modify `src/invoice.js`. Do not modify, add or delete tests or any other file. You can run the existing tests with `npm test`.",
+  "allowedFiles": [
+    "src/invoice.js"
+  ],
+  "hiddenTestCommand": "node --test \"hidden-tests/*.test.js\"",
+  "publicTestCommand": "node --test \"test/*.test.js\""
+}

@@ -28,9 +28,9 @@ export declare const AgileCeremonySchema: z.ZodObject<{
     status: "IN_PROGRESS" | "SCHEDULED" | "CONCLUDED" | "ESCALATED_TO_CTO";
     id: string;
     summary: string;
+    startedAt: string;
     chairRole: string;
     attendeeRoles: string[];
-    startedAt: string;
     inputArtifactUri?: string | undefined;
     outputArtifactUri?: string | undefined;
     concludedAt?: string | undefined;
@@ -41,9 +41,9 @@ export declare const AgileCeremonySchema: z.ZodObject<{
     chairRole: string;
     attendeeRoles: string[];
     status?: "IN_PROGRESS" | "SCHEDULED" | "CONCLUDED" | "ESCALATED_TO_CTO" | undefined;
+    startedAt?: string | undefined;
     inputArtifactUri?: string | undefined;
     outputArtifactUri?: string | undefined;
-    startedAt?: string | undefined;
     concludedAt?: string | undefined;
 }>;
 export type AgileCeremony = z.infer<typeof AgileCeremonySchema>;

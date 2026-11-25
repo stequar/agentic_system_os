@@ -4,6 +4,8 @@ import {
   GatekeeperResultSchema,
   type GatekeeperResult,
 } from "../contracts/review.js";
+import type { GatekeeperCommandOutcome } from "../contracts/telemetry.js";
+import { recordGatekeeperVerdict } from "../telemetry/run-trace.js";
 
 export interface GatekeeperOptions {
   timeoutMs?: number;
@@ -262,6 +264,7 @@ export async function runGatekeeper(
   let unparsedCommandsFailed = 0;
 
   const rawOutputChunks: string[] = [];
+  const commandOutcomes: GatekeeperCommandOutcome[] = [];
 
   for (let cmd of testCommands) {
     const { isTypecheck, isLint, isTest } = classifyCommand(cmd);
@@ -278,6 +281,11 @@ export async function runGatekeeper(
     const result = await executeCommand(cmd, targetPath, timeoutMs);
 
     const cmdPassed = !result.timedOut && result.exitCode === 0;
+    commandOutcomes.push({
+      command: cmd,
+      exitCode: Number.isInteger(result.exitCode) ? result.exitCode : -1,
+      timedOut: result.timedOut,
+    });
 
     if (isTypecheck && !cmdPassed) {
       typecheckPassed = false;
@@ -360,5 +368,18 @@ export async function runGatekeeper(
     rawOutput,
   };
 
-  return GatekeeperResultSchema.parse(finalResult);
+  const validated = GatekeeperResultSchema.parse(finalResult);
+
+  // Observability: when a ticket is active, append what actually happened (process
+  // exit codes) to the ticket trace. Tracing must never change the gatekeeper result.
+  await recordGatekeeperVerdict(targetPath, {
+    commands: commandOutcomes,
+    typecheckPassed: validated.typecheckPassed,
+    linterPassed: validated.linterPassed,
+    testsPassed: validated.testsPassed,
+    totalTests: validated.totalTests,
+    failedTests: validated.failedTests,
+  }).catch(() => false);
+
+  return validated;
 }

@@ -92,14 +92,14 @@ export declare const McpClientConfigSchema: z.ZodObject<{
     serverName: string;
     transport: "stdio" | "sse";
     args: string[];
-    url?: string | undefined;
     command?: string | undefined;
+    url?: string | undefined;
 }, {
     serverName: string;
     timeoutMs?: number | undefined;
+    command?: string | undefined;
     url?: string | undefined;
     transport?: "stdio" | "sse" | undefined;
-    command?: string | undefined;
     args?: string[] | undefined;
 }>;
 export type McpToolDefinition = z.infer<typeof McpToolDefinitionSchema>;

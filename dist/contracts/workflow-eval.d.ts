@@ -171,7 +171,9 @@ export declare const WorkflowEvalScorecardSchema: z.ZodObject<{
     targetPath: z.ZodString;
     evaluatedAt: z.ZodString;
     overallScore: z.ZodNumber;
-    verdict: z.ZodEnum<["WORKFLOW_CERTIFIED", "NEEDS_REMEDIATION"]>;
+    evaluationKind: z.ZodDefault<z.ZodLiteral<"SCRIPTED_CONFORMANCE">>;
+    measuresRealAgentRuns: z.ZodDefault<z.ZodLiteral<false>>;
+    verdict: z.ZodEnum<["SCRIPTED_CONFORMANCE_PASSED", "NEEDS_REMEDIATION"]>;
     axes: z.ZodArray<z.ZodObject<{
         axisId: z.ZodEnum<["W1_SESSION_BOOT_AND_CTO_PERSONA", "W2_COGNITIVE_FORCING_FUNCTIONS_GATE", "W3_TRI_RING_SYNC_AND_SCOPE_ROUTING", "W4_CEREMONIES_AND_DEVILS_ADVOCATE_FIDELITY", "W5_DUAL_BRAIN_CLI_ENGINE_BRIDGE", "W6_SELF_HOSTING_SYMMETRY", "W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT"]>;
         title: z.ZodString;
@@ -202,7 +204,9 @@ export declare const WorkflowEvalScorecardSchema: z.ZodObject<{
     evalId: string;
     evaluatedAt: string;
     overallScore: number;
-    verdict: "WORKFLOW_CERTIFIED" | "NEEDS_REMEDIATION";
+    evaluationKind: "SCRIPTED_CONFORMANCE";
+    measuresRealAgentRuns: false;
+    verdict: "SCRIPTED_CONFORMANCE_PASSED" | "NEEDS_REMEDIATION";
     axes: {
         axisId: "W1_SESSION_BOOT_AND_CTO_PERSONA" | "W2_COGNITIVE_FORCING_FUNCTIONS_GATE" | "W3_TRI_RING_SYNC_AND_SCOPE_ROUTING" | "W4_CEREMONIES_AND_DEVILS_ADVOCATE_FIDELITY" | "W5_DUAL_BRAIN_CLI_ENGINE_BRIDGE" | "W6_SELF_HOSTING_SYMMETRY" | "W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT";
         title: string;
@@ -217,7 +221,7 @@ export declare const WorkflowEvalScorecardSchema: z.ZodObject<{
     evalId: string;
     evaluatedAt: string;
     overallScore: number;
-    verdict: "WORKFLOW_CERTIFIED" | "NEEDS_REMEDIATION";
+    verdict: "SCRIPTED_CONFORMANCE_PASSED" | "NEEDS_REMEDIATION";
     axes: {
         axisId: "W1_SESSION_BOOT_AND_CTO_PERSONA" | "W2_COGNITIVE_FORCING_FUNCTIONS_GATE" | "W3_TRI_RING_SYNC_AND_SCOPE_ROUTING" | "W4_CEREMONIES_AND_DEVILS_ADVOCATE_FIDELITY" | "W5_DUAL_BRAIN_CLI_ENGINE_BRIDGE" | "W6_SELF_HOSTING_SYMMETRY" | "W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT";
         title: string;
@@ -227,6 +231,8 @@ export declare const WorkflowEvalScorecardSchema: z.ZodObject<{
         evidence: string[];
         metrics?: Record<string, string | number | boolean> | undefined;
     }[];
+    evaluationKind?: "SCRIPTED_CONFORMANCE" | undefined;
+    measuresRealAgentRuns?: false | undefined;
 }>;
 export type WorkflowEvalScorecard = z.infer<typeof WorkflowEvalScorecardSchema>;
 //# sourceMappingURL=workflow-eval.d.ts.map

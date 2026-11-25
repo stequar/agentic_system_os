@@ -84,3 +84,23 @@ export * from "./contracts/healing.js";
 export * from "./contracts/settings.js";
 export * from "./contracts/git.js";
 export * from "./contracts/mcp.js";
+
+// ── Observability: ticket anchor, raw hook recorder and gatekeeper verdict trace ──
+export {
+  startTicket,
+  readActiveTicket,
+  readTrace,
+  recordGatekeeperVerdict,
+  installClaudeCodeHookRecorder,
+} from "./telemetry/run-trace.js";
+export * from "./contracts/telemetry.js";
+
+// ── End-to-end agent-run evaluation (real agent, code-based grading) ────────
+export {
+  AgentRunEvalHarness,
+  claudeCodeHeadlessRunner,
+  loadAgentTask,
+  wilsonInterval,
+  type AgentRunner,
+} from "./eval/agent-run-harness.js";
+export * from "./contracts/agent-run-eval.js";

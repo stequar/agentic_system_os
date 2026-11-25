@@ -15,3 +15,7 @@ coverage/
 .company-os/worktrees/
 .company-os/sessions/
 .company-os/bin/
+.company-os/audit.eval.jsonl
+.company-os/hooks/
+.company-os/active-ticket.json
+.company-os/eval-runs/

@@ -66,7 +66,9 @@ export declare const IntegrationEvalScorecardSchema: z.ZodObject<{
     zeroHintMode: z.ZodLiteral<true>;
     cleanSlateResetVerified: z.ZodBoolean;
     overallScore: z.ZodNumber;
-    verdict: z.ZodEnum<["CERTIFIED_EXCELLENT", "PASSED_WITH_WARNINGS", "FAILED"]>;
+    evaluationKind: z.ZodDefault<z.ZodLiteral<"SCRIPTED_CONFORMANCE">>;
+    measuresRealAgentRuns: z.ZodDefault<z.ZodLiteral<false>>;
+    verdict: z.ZodEnum<["SCRIPTED_CONFORMANCE_PASSED", "PASSED_WITH_WARNINGS", "FAILED"]>;
     dimensions: z.ZodArray<z.ZodObject<{
         dimensionId: z.ZodEnum<["E1_NON_DESTRUCTIVE_PRESERVATION", "E2_BLIND_DOMAIN_DISCOVERY_RECALL", "E3_AUTONOMOUS_CEREMONY_ROUTING", "E4_DOMAIN_INVARIANT_SAFETY_ENFORCEMENT", "E5_NATIVE_TARGET_GATEKEEPER_PASS", "E6_OPERATIONAL_EFFICIENCY_AND_MERKLE"]>;
         title: z.ZodString;
@@ -115,7 +117,9 @@ export declare const IntegrationEvalScorecardSchema: z.ZodObject<{
     targetPath: string;
     evalId: string;
     overallScore: number;
-    verdict: "FAILED" | "CERTIFIED_EXCELLENT" | "PASSED_WITH_WARNINGS";
+    evaluationKind: "SCRIPTED_CONFORMANCE";
+    measuresRealAgentRuns: false;
+    verdict: "SCRIPTED_CONFORMANCE_PASSED" | "FAILED" | "PASSED_WITH_WARNINGS";
     executedAt: string;
     zeroHintMode: true;
     cleanSlateResetVerified: boolean;
@@ -139,7 +143,7 @@ export declare const IntegrationEvalScorecardSchema: z.ZodObject<{
     targetPath: string;
     evalId: string;
     overallScore: number;
-    verdict: "FAILED" | "CERTIFIED_EXCELLENT" | "PASSED_WITH_WARNINGS";
+    verdict: "SCRIPTED_CONFORMANCE_PASSED" | "FAILED" | "PASSED_WITH_WARNINGS";
     executedAt: string;
     zeroHintMode: true;
     cleanSlateResetVerified: boolean;
@@ -159,6 +163,8 @@ export declare const IntegrationEvalScorecardSchema: z.ZodObject<{
         nativeTestsPassed: boolean;
         nativeTestOutputSummary: string;
     };
+    evaluationKind?: "SCRIPTED_CONFORMANCE" | undefined;
+    measuresRealAgentRuns?: false | undefined;
 }>;
 export type IntegrationEvalScorecard = z.infer<typeof IntegrationEvalScorecardSchema>;
 //# sourceMappingURL=eval.d.ts.map

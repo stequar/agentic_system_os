@@ -466,6 +466,7 @@ Dopo il rilascio di `Sprint 18.2`:
 - **Settings Behavioral Eval (`S1..S5`):** **100/100 (`SETTINGS_VERIFIED`)**
 - **Workflow Behavioral Eval (`W1..W7`):** **100/100 (`WORKFLOW_CERTIFIED`)**
 - **Zero-Hint Integration Eval (`E1..E6`):** **100/100 (`CERTIFIED_EXCELLENT`)**
+- **Correction (2026-11-14):** the `W1..W7` and `E1..E6` results in this dashboard are **scripted conformance checks**, not measurements of agent behaviour. Their verdicts were renamed to `SCRIPTED_CONFORMANCE_PASSED`; see `docs/wiki/qa/workflow-eval-plan.md`.
 - **TypeScript Typecheck:** **0 errori (Strict Mode)**
 
 ---

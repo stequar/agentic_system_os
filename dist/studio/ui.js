@@ -38,22 +38,22 @@ ${STUDIO_CSS}
   <div class="metrics-row">
     <div class="metric-card">
       <div class="metric-title">First-Pass Yield (FPY)</div>
-      <div id="kpi-fpy" class="metric-value success">--%</div>
+      <div id="kpi-fpy" class="metric-value">not measured</div>
       <div class="metric-sub">Closed without corrective cycles</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Mean Self-Healing Cycles</div>
-      <div id="kpi-healing" class="metric-value">--</div>
+      <div id="kpi-healing" class="metric-value">not measured</div>
       <div class="metric-sub">AST Closed-loop convergence</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Contract Compliance</div>
-      <div id="kpi-compliance" class="metric-value success">--%</div>
+      <div id="kpi-compliance" class="metric-value">not measured</div>
       <div class="metric-sub">Zod runtime strict guard</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Merkle Audit Integrity</div>
-      <div id="kpi-audit" class="metric-value success">INTEGRA ✅</div>
+      <div id="kpi-audit" class="metric-value">not measured</div>
       <div class="metric-sub">HMAC-SHA256 verified trail</div>
     </div>
   </div>
@@ -62,31 +62,31 @@ ${STUDIO_CSS}
   <div class="metrics-row-5">
     <div class="metric-card">
       <div class="metric-title">Live Token FinOps Spend</div>
-      <div id="kpi-finops-spend" class="metric-value">$0.0000</div>
-      <div id="kpi-finops-tokens" class="metric-sub">0 total tokens</div>
+      <div id="kpi-finops-spend" class="metric-value">not measured</div>
+      <div id="kpi-finops-tokens" class="metric-sub">no usage records</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Net Prompt Caching Savings</div>
-      <div id="kpi-finops-savings" class="metric-value savings">+$0.0000</div>
-      <div id="kpi-finops-ratio" class="metric-sub">0.0% saved vs uncached</div>
+      <div id="kpi-finops-savings" class="metric-value">not measured</div>
+      <div id="kpi-finops-ratio" class="metric-sub">no usage records</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Prompt Cache Read Ratio</div>
-      <div id="kpi-cache-read-rate" class="metric-value">--%</div>
-      <div id="kpi-cache-reads" class="metric-sub">0 cache-read tokens</div>
+      <div id="kpi-cache-read-rate" class="metric-value">not measured</div>
+      <div id="kpi-cache-reads" class="metric-sub">no usage records</div>
     </div>
     <div class="metric-card">
       <div class="metric-title">Context Health Score</div>
-      <div id="kpi-health-score" class="metric-value success">100%</div>
+      <div id="kpi-health-score" class="metric-value">not measured</div>
       <div class="health-bar-container">
-        <div id="health-bar" class="health-bar-fill" style="width: 100%;"></div>
+        <div id="health-bar" class="health-bar-fill" style="width: 0%;"></div>
       </div>
-      <div id="kpi-health-msg" class="metric-sub" style="margin-top: 4px;">EXCELLENT • RAM fresca</div>
+      <div id="kpi-health-msg" class="metric-sub" style="margin-top: 4px;">no token usage recorded</div>
     </div>
     <div class="metric-card">
-      <div class="metric-title">Caveman Fluff Reduction</div>
-      <div id="kpi-fluff-ratio" class="metric-value savings">0.0%</div>
-      <div id="kpi-fluff-tokens" class="metric-sub">0 tokens cut ($0.00 saved)</div>
+      <div class="metric-title">Caveman Fluff Reduction (estimate)</div>
+      <div id="kpi-fluff-ratio" class="metric-value">not measured</div>
+      <div id="kpi-fluff-tokens" class="metric-sub">no records</div>
     </div>
   </div>
 

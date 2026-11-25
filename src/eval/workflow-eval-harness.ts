@@ -13,7 +13,7 @@ import { TriRingOrgChartSchema, type TriRingOrgChart } from "../contracts/brownf
 import { CompanyStateMachine } from "../core/state-machine.js";
 import { CeremonyDispatcher } from "../core/ceremony-dispatcher.js";
 import { ConsensusEngine } from "../core/consensus-engine.js";
-import { AuditLogger } from "../core/audit-logger.js";
+import { AuditLogger, withEvalAuditChannel } from "../core/audit-logger.js";
 import { FastDecisionGate } from "../core/fast-decision-gate.js";
 import { validatePatch } from "../gatekeeper/ast-guard.js";
 import { createMemoryContext } from "../cli/context.js";
@@ -45,6 +45,18 @@ function hasValidLines1To4YamlFrontmatter(
  * sia su `agentic_company_os` (Self-Hosting) sia su qualsiasi repository target (`fitness_project`).
  */
 export async function runWorkflowBehavioralEval(
+  targetPath: string
+): Promise<WorkflowEvalScorecard> {
+  return withEvalAuditChannel(() => runWorkflowConformanceChecks(targetPath));
+}
+
+/**
+ * SCRIPTED CONFORMANCE, not a behavioural measurement: the inputs (RCA report,
+ * red-team verdict, ceremonies) are authored here and replayed through deterministic
+ * code. A pass means the governance files and gates are wired as specified; it says
+ * nothing about how an agent behaves when it works under them.
+ */
+async function runWorkflowConformanceChecks(
   targetPath: string
 ): Promise<WorkflowEvalScorecard> {
   const resolvedPath = path.resolve(targetPath);
@@ -91,7 +103,7 @@ export async function runWorkflowBehavioralEval(
   const axisW1: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W1_SESSION_BOOT_AND_CTO_PERSONA",
     title: "Top-of-File CTO L1 Persona, 3-Option CEO Greeting Rule & 4 Valid YAML Skills",
-    score: w1Passed ? 100 : 40,
+    score: w1Passed ? 100 : 0,
     passed: w1Passed,
     weight: 0.15,
     evidence: [
@@ -184,7 +196,7 @@ export async function runWorkflowBehavioralEval(
   const axisW2: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W2_COGNITIVE_FORCING_FUNCTIONS_GATE",
     title: "4 CTO Modes, 4 CFFs & Deterministic Anti-Rush Gate in CompanyStateMachine",
-    score: w2Passed ? 100 : 30,
+    score: w2Passed ? 100 : 0,
     passed: w2Passed,
     weight: 0.15,
     evidence: [
@@ -261,7 +273,7 @@ export async function runWorkflowBehavioralEval(
   const axisW3: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W3_TRI_RING_SYNC_AND_SCOPE_ROUTING",
     title: "Zero Ghost Roles (100% Org-Chart <-> AGENTS.md Sync) & Multi-Scope Routing",
-    score: w3Passed ? 100 : 50,
+    score: w3Passed ? 100 : 0,
     passed: w3Passed,
     weight: 0.15,
     evidence: [
@@ -389,25 +401,27 @@ export async function runWorkflowBehavioralEval(
     },
   });
 
+  const devilsAdvocateSummoned = cRoundtable.attendeeRoles.includes("qa_lead");
+  const domainExpertSummoned = primaryDomainExpert
+    ? cRoundtable.attendeeRoles.includes(primaryDomainExpert.id)
+    : true;
   const w4Passed =
     cRefinement.summary.includes("Active Domain Invariants:") &&
-    cRoundtable.attendeeRoles.includes("qa_lead") &&
-    (primaryDomainExpert
-      ? cRoundtable.attendeeRoles.includes(primaryDomainExpert.id)
-      : true) &&
+    devilsAdvocateSummoned &&
+    domainExpertSummoned &&
     convergence.status === "CONSENSUS_REACHED";
 
   const axisW4: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W4_CEREMONIES_AND_DEVILS_ADVOCATE_FIDELITY",
     title: "End-to-End 5 Agile Ceremonies & Mandatory Devil's Advocate (qa_lead + Ring-2)",
-    score: w4Passed ? 100 : 50,
+    score: w4Passed ? 100 : 0,
     passed: w4Passed,
     weight: 0.15,
     evidence: [
       `All 5 Agile Ceremonies executed & persisted (Kickoff, Refinement 1:1, Roundtable, War Room, Retrospective)`,
       `Domain Invariants automatically injected into ceremony summaries: ${cRefinement.summary.includes("Active Domain Invariants:")}`,
-      `Devil's Advocate 'qa_lead' & Ring-2 expert '${primaryDomainExpert?.id ?? "n/a"}' participated in Roundtable: true`,
-      `ConsensusEngine 2-round convergence status: ${convergence.status}`,
+      `Devil's Advocate 'qa_lead' on Roundtable attendee list: ${devilsAdvocateSummoned}; Ring-2 expert '${primaryDomainExpert?.id ?? "none in org chart — not checked"}' on attendee list: ${primaryDomainExpert ? domainExpertSummoned : "n/a"}`,
+      `ConsensusEngine status after a SCRIPTED red-team verdict (MITIGATION_ACCEPTED supplied by this harness): ${convergence.status}`,
     ],
     metrics: {
       ceremoniesExecuted: 5,
@@ -419,6 +433,9 @@ export async function runWorkflowBehavioralEval(
   // =========================================================================
   // ASSE W5: DUAL_BRAIN_CLI_ENGINE_BRIDGE
   // =========================================================================
+  const auditLogger = new AuditLogger(resolvedPath);
+  const auditEntriesBeforeCli = (await auditLogger.verifyAuditChain()).totalEntries;
+
   const ctxStatus = createMemoryContext(resolvedPath);
   const appStatus = createCliApp(ctxStatus);
   await appStatus.parseAsync([
@@ -479,8 +496,10 @@ export async function runWorkflowBehavioralEval(
     JSON.parse(wfStateRaw)
   ).success;
 
-  const auditLogger = new AuditLogger(resolvedPath);
   const merkleCheck = await auditLogger.verifyAuditChain();
+  // Entries that already existed prove nothing about this run: count only what the
+  // four CLI calls above appended.
+  const auditEntriesWrittenByCli = merkleCheck.totalEntries - auditEntriesBeforeCli;
 
   const w5Passed =
     statusJson.action === "status" &&
@@ -490,24 +509,25 @@ export async function runWorkflowBehavioralEval(
     gateOkJson.allowed === true &&
     wfStateValid &&
     merkleCheck.valid &&
-    merkleCheck.totalEntries >= 3;
+    auditEntriesWrittenByCli >= 3;
 
   const axisW5: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W5_DUAL_BRAIN_CLI_ENGINE_BRIDGE",
     title: "Dual-Brain CLI Bridge (`workflow status|route|verify-gate`) & Merkle Audit Trail",
-    score: w5Passed ? 100 : 40,
+    score: w5Passed ? 100 : 0,
     passed: w5Passed,
     weight: 0.15,
     evidence: [
       `CLI 'workflow status --json' returned activeMode=${statusJson.activeMode}, ring2Count=${statusJson.ring2DomainExperts?.length ?? 0}`,
       `CLI 'workflow route --scope ${probeFile}' matched: ${(routeJson.matchedAttendeeIds ?? []).join(", ")}`,
       `CLI 'workflow verify-gate' blocked unapproved anomaly (${gateBlockedJson.allowed === false}) and authorized normal sprint (${gateOkJson.allowed === true})`,
-      `Persisted .company-os/workflow-state.json valid=${wfStateValid} & Merkle Audit Chain valid=${merkleCheck.valid} (entries=${merkleCheck.totalEntries})`,
+      `Persisted .company-os/workflow-state.json valid=${wfStateValid} & Merkle Audit Chain valid=${merkleCheck.valid} (entries appended by the 4 CLI calls=${auditEntriesWrittenByCli})`,
     ],
     metrics: {
       workflowStateValid: wfStateValid,
       merkleValid: merkleCheck.valid,
       merkleEntries: merkleCheck.totalEntries,
+      auditEntriesWrittenByCli,
     },
   });
 
@@ -541,7 +561,7 @@ export async function runWorkflowBehavioralEval(
   const axisW6: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W6_SELF_HOSTING_SYMMETRY",
     title: "100% Self-Hosting DNA Symmetry (CTO L1, Modes, CFFs, Tri-Ring, RACI, 4 Skills, Dashboard)",
-    score: w6Passed ? 100 : 50,
+    score: w6Passed ? 100 : 0,
     passed: w6Passed,
     weight: 0.15,
     evidence: [
@@ -613,7 +633,7 @@ export async function runWorkflowBehavioralEval(
   const axisW7: WorkflowEvalAxisResult = WorkflowEvalAxisResultSchema.parse({
     axisId: "W7_GATEKEEPER_AND_INVARIANT_ENFORCEMENT",
     title: "AST Diff Guard, Scope Enforcement, FastDecisionGate & Hermetic Invariants Config",
-    score: w7Passed ? 100 : 40,
+    score: w7Passed ? 100 : 0,
     passed: w7Passed,
     weight: 0.1,
     evidence: [
@@ -641,9 +661,11 @@ export async function runWorkflowBehavioralEval(
     targetPath: resolvedPath,
     evaluatedAt: new Date().toISOString(),
     overallScore,
+    evaluationKind: "SCRIPTED_CONFORMANCE",
+    measuresRealAgentRuns: false,
     verdict:
       overallScore === 100 && allPassed
-        ? "WORKFLOW_CERTIFIED"
+        ? "SCRIPTED_CONFORMANCE_PASSED"
         : "NEEDS_REMEDIATION",
     axes,
   });

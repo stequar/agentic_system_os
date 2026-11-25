@@ -18,6 +18,10 @@ export const ProcessQualityMetricsSchema = z.object({
     contractComplianceRate: z.number().min(0).max(100).describe("Percentuale conformità dei contratti a runtime (0-100%)"),
     totalContractChecks: z.number().int().nonnegative().describe("Totale verifiche contrattuali eseguite"),
     contractViolations: z.number().int().nonnegative().describe("Totale violazioni contrattuali rilevate"),
+    contractChecksMeasured: z
+        .boolean()
+        .default(false)
+        .describe("True only when the denominator comes from explicit CONTRACT_CHECK_PASSED events or a caller-supplied count; false when it fell back to the total event count"),
     totalAuditEvents: z.number().int().nonnegative().describe("Numero totale di eventi nel log crittografico"),
     auditChainIntact: z.boolean().describe("Stato di integrità crittografica della catena Merkle"),
     calculatedAt: z.string().datetime().default(() => new Date().toISOString()),

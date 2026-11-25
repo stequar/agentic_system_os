@@ -43,4 +43,8 @@ export * from "./contracts/healing.js";
 export * from "./contracts/settings.js";
 export * from "./contracts/git.js";
 export * from "./contracts/mcp.js";
+export { startTicket, readActiveTicket, readTrace, recordGatekeeperVerdict, installClaudeCodeHookRecorder, } from "./telemetry/run-trace.js";
+export * from "./contracts/telemetry.js";
+export { AgentRunEvalHarness, claudeCodeHeadlessRunner, loadAgentTask, wilsonInterval, type AgentRunner, } from "./eval/agent-run-harness.js";
+export * from "./contracts/agent-run-eval.js";
 //# sourceMappingURL=lib.d.ts.map

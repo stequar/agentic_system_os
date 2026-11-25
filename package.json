@@ -32,7 +32,8 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "eval:agent": "tsx scripts/run-agent-eval.ts"
   },
   "keywords": [
     "ai-agents",

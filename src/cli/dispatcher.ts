@@ -102,13 +102,14 @@ export function createCliApp(ctx: ExecutionContext = createDefaultContext()): Co
 
   program
     .command("workflow <action> [path]")
-    .description("Dual-Brain CLI Bridge to query CTO Mode state, Tri-Ring Scope Routing, the Cognitive Forcing Gate, and Settings (status | route | verify-gate | settings | set-setting | eval-settings)")
+    .description("Dual-Brain CLI Bridge to query CTO Mode state, Tri-Ring Scope Routing, the Cognitive Forcing Gate, and Settings (status | route | verify-gate | settings | set-setting | eval-settings | start-ticket | install-hooks | trace)")
     .option("--scope <filesOrKeywords>", "Comma-separated files or keywords for routing Ring-1/Ring-2 experts")
     .option("--mode <mode>", "CTO operating mode (MODE_1_STANDUP | MODE_2_INVESTIGATE_RCA | MODE_3_RND_ROUNDTABLE | MODE_4_BUILD_GATEKEEPER)")
     .option("--stimulus <stimulus>", "Tipo di stimolo (NORMAL_SPRINT | ANOMALY_OR_BUG)")
     .option("--rca-file <rcaFile>", "Path to the JSON file containing the RootCauseAnalysisReport")
     .option("--key <settingKey>", "Chiave dot-notation del setting in .company-os/settings.json (es. governance.spikeCheckpoint)")
     .option("--value <settingValue>", "New value to set for the specified setting")
+    .option("--ticket <ticketId>", "Ticket id for start-ticket (sets the active ticket + git baseline) or trace (filter)")
     .option("--json", "Output serializzato in formato JSON puro")
     .action(async (action: string, targetPath?: string, options?: any) => {
       await workflowCommand(ctx, action, targetPath, options);

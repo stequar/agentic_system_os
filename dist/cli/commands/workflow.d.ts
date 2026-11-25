@@ -6,6 +6,7 @@ export interface WorkflowCommandOptions {
     rcaFile?: string;
     key?: string;
     value?: string;
+    ticket?: string;
     json?: boolean;
 }
 export declare function workflowCommand(ctx: ExecutionContext, action: string, targetPath?: string, options?: WorkflowCommandOptions): Promise<void>;

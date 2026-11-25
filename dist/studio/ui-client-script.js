@@ -153,16 +153,24 @@ export function renderStudioClientScript(token) {
         .replace(/'/g, '&#39;');
     }
 
+    const NOT_MEASURED = 'not measured';
+
     // 4. Caricamento Metriche di Cooperazione
     async function loadMetrics() {
       try {
         const res = await fetch('/api/metrics?token=' + encodeURIComponent(token));
         const metrics = await res.json();
-
-        document.getElementById('kpi-fpy').textContent = metrics.firstPassYieldPercentage + '%';
-        document.getElementById('kpi-healing').textContent = metrics.meanSelfHealingCycles;
-        document.getElementById('kpi-compliance').textContent = metrics.contractCompliancePercentage + '%';
-        document.getElementById('kpi-audit').textContent = metrics.auditTrailIntegrity ? 'INTEGRA ✅' : 'CORROTTA ❌';
+        // Honest display: a KPI is rendered only when the audit log actually contains
+        // the events it is computed from; otherwise the tile says "not measured".
+        const fpy = metrics.fpy || {};
+        const hasTickets = typeof fpy.totalTickets === 'number' && fpy.totalTickets > 0;
+        document.getElementById('kpi-fpy').textContent = hasTickets ? fpy.fpyPercentage + '%' : NOT_MEASURED;
+        document.getElementById('kpi-healing').textContent = hasTickets ? metrics.meanSelfHealingIterations : NOT_MEASURED;
+        document.getElementById('kpi-compliance').textContent = metrics.contractChecksMeasured ? metrics.contractComplianceRate + '%' : NOT_MEASURED;
+        document.getElementById('kpi-audit').textContent =
+          typeof metrics.auditChainIntact !== 'boolean' || !(metrics.totalAuditEvents > 0)
+            ? NOT_MEASURED
+            : metrics.auditChainIntact ? 'INTACT ✅' : 'CORRUPTED ❌';
       } catch (err) {}
     }
 
@@ -172,12 +180,24 @@ export function renderStudioClientScript(token) {
         const res = await fetch('/api/finops?token=' + encodeURIComponent(token));
         const finops = await res.json();
 
-        document.getElementById('kpi-finops-spend').textContent = '$' + finops.totalCostUsd.toFixed(4);
+        // FinOps tiles show real usage records only. With zero records nothing was measured.
+        if (!(finops.recordsCount > 0)) {
+          ['kpi-finops-spend', 'kpi-finops-savings', 'kpi-cache-read-rate'].forEach(id => {
+            document.getElementById(id).textContent = NOT_MEASURED;
+          });
+          document.getElementById('kpi-finops-tokens').textContent = 'no usage records';
+          document.getElementById('kpi-finops-ratio').textContent = 'no usage records';
+          document.getElementById('kpi-cache-reads').textContent = 'no usage records';
+          return;
+        }
+        const cacheableInput = finops.totalUncachedInputTokens + finops.totalCacheReadTokens;
+        const cacheReadRate = cacheableInput > 0 ? (finops.totalCacheReadTokens / cacheableInput) * 100 : 0;
+        document.getElementById('kpi-finops-spend').textContent = '$' + finops.totalActualCostUsd.toFixed(4);
         document.getElementById('kpi-finops-tokens').textContent = finops.totalTokens.toLocaleString() + ' total tokens';
-        document.getElementById('kpi-finops-savings').textContent = '+$' + finops.promptCacheSavingsUsd.toFixed(4);
-        document.getElementById('kpi-finops-ratio').textContent = finops.cacheSavingsRatioPercentage.toFixed(1) + '% saved vs uncached';
-        document.getElementById('kpi-cache-read-rate').textContent = finops.promptCacheHitRatePercentage.toFixed(1) + '%';
-        document.getElementById('kpi-cache-reads').textContent = finops.cacheReadTokens.toLocaleString() + ' cache-read tokens';
+        document.getElementById('kpi-finops-savings').textContent = '+$' + finops.totalNetSavingsUsd.toFixed(4);
+        document.getElementById('kpi-finops-ratio').textContent = finops.cacheSavingsRatio.toFixed(1) + '% saved vs uncached';
+        document.getElementById('kpi-cache-read-rate').textContent = cacheReadRate.toFixed(1) + '%';
+        document.getElementById('kpi-cache-reads').textContent = finops.totalCacheReadTokens.toLocaleString() + ' cache-read tokens';
       } catch (err) {}
     }
 
@@ -188,7 +208,11 @@ export function renderStudioClientScript(token) {
         const health = await res.json();
 
         const scoreEl = document.getElementById('kpi-health-score');
-        if (scoreEl) {
+        if (scoreEl && health.measured === false) {
+          scoreEl.textContent = NOT_MEASURED;
+          document.getElementById('health-bar').style.width = '0%';
+          document.getElementById('kpi-health-msg').textContent = 'no token usage recorded';
+        } else if (scoreEl) {
           scoreEl.textContent = health.healthScore + '%';
 
           const bar = document.getElementById('health-bar');
@@ -207,6 +231,11 @@ export function renderStudioClientScript(token) {
         const res = await fetch('/api/fluff-telemetry?token=' + encodeURIComponent(token));
         const report = await res.json();
 
+        if (!(report.fluffTokensEliminated > 0)) {
+          document.getElementById('kpi-fluff-ratio').textContent = NOT_MEASURED;
+          document.getElementById('kpi-fluff-tokens').textContent = 'no records';
+          return;
+        }
         document.getElementById('kpi-fluff-ratio').textContent = report.fluffReductionPercentage.toFixed(1) + '%';
         document.getElementById('kpi-fluff-tokens').textContent = 
           report.fluffTokensEliminated.toLocaleString() + ' tokens cut ($' + report.estimatedDollarsSavedUsd.toFixed(4) + ' saved)';

@@ -5,6 +5,7 @@ import { detectProjectStack } from "../inspector/detector.js";
 import { SettingsManager } from "../core/settings-manager.js";
 import { graftManagedSection } from "./smart-merge.js";
 import { atomicWriteFile } from "../utils/fs-atomic.js";
+import { installClaudeCodeHookRecorder } from "../telemetry/run-trace.js";
 import {
   TriRingOrgChartSchema,
   type TriRingOrgChart,
@@ -17,6 +18,8 @@ export interface HarnessAdapterResult {
   humanTitle: string;
   orchestratorTitle: string;
   generatedFiles: string[];
+  /** Observability files (hook recorder + per-machine settings); empty on dry runs. */
+  telemetryHookFiles: string[];
 }
 
 export function resolvePersonaTitles(
@@ -317,6 +320,7 @@ export async function setupAgentHarnesses(
   );
 
   const generatedFiles: string[] = [];
+  const telemetryHookFiles: string[] = [];
   const claudeMdPath = path.join(resolvedPath, "CLAUDE.md");
   const mcpJsonPath = path.join(resolvedPath, ".mcp.json");
   const claudeCommandsDir = path.join(resolvedPath, ".claude", "commands");
@@ -372,6 +376,11 @@ export async function setupAgentHarnesses(
       mode: 0o755,
     });
 
+    // 4b. Observability: raw agent-CLI hook recorder (Claude Code). Registered in the
+    // per-machine .claude/settings.local.json; payloads stay in .company-os/telemetry/.
+    const hookInstall = await installClaudeCodeHookRecorder(resolvedPath);
+    telemetryHookFiles.push(hookInstall.scriptPath, hookInstall.settingsPath);
+
     // 5. Local Git Exclude (.git/info/exclude) so evaluation artifacts don't pollute git status
     const gitExcludePath = path.join(resolvedPath, ".git", "info", "exclude");
     try {
@@ -405,5 +414,6 @@ export async function setupAgentHarnesses(
     humanTitle,
     orchestratorTitle,
     generatedFiles,
+    telemetryHookFiles,
   };
 }

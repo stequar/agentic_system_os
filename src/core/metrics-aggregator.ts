@@ -118,6 +118,8 @@ export class MetricsAggregator {
       contractComplianceRate,
       totalContractChecks,
       contractViolations,
+      contractChecksMeasured:
+        totalContractChecksOverride !== undefined || explicitContractChecks > 0,
       totalAuditEvents: events.length,
       auditChainIntact,
       calculatedAt: new Date().toISOString(),

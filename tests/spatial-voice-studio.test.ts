@@ -85,7 +85,7 @@ describe("Sprint 23: Living Spatial Architecture Canvas & Executive Voice Direct
     });
 
     it("espone GET /api/spatial-graph e POST /api/voice-director su Web Studio e execute_voice_command su MCP", async () => {
-      const studio = await startStudioServer(tempDir, { port: 0 });
+      const studio = await startStudioServer({ targetPath: tempDir, port: 0 });
       try {
         const headers = {
           Authorization: `Bearer ${studio.token}`,
